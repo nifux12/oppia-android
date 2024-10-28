@@ -93,6 +93,28 @@ class ConsoleLoggerTest {
     assertThat(logContent).contains("Error 2")
     assertThat(logContent.indexOf("Error 1")).isLessThan(logContent.indexOf("Error 2"))
   }
+  @Test
+  fun testConsoleLogger_closeAndReopen_continuesToAppend() {
+    consoleLogger.e(testTag, "Error before close")
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    // Simulate closing by deleting the log file.
+    logFile.delete()
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    consoleLogger.e(testTag, "Error after reopen")
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    if (!logFile.exists()) {
+      logFile.createNewFile()
+    }
+
+    val logContent = logFile.readText()
+    assertThat(logContent).contains("Error before close")
+    assertThat(logContent).contains("Error after reopen")
+    assertThat(logContent.indexOf("Error before close"))
+      .isLessThan(logContent.indexOf("Error after reopen"))
+  }
 
   private fun setUpTestApplicationComponent() {
     ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
