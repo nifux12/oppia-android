@@ -13,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,7 +35,6 @@ import org.robolectric.annotation.LooperMode
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
-import org.junit.After
 
 @Suppress("FunctionName")
 @RunWith(OppiaParameterizedTestRunner::class)
