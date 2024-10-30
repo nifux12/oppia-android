@@ -9,6 +9,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import java.io.File
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,6 +28,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.oppia.android.util.logging.LogFilePath
 
 /** Tests for [DebugFirestoreEventLoggerImpl]. */
 // FunctionName: test names are conventionally named with underscores.
@@ -158,6 +160,12 @@ class DebugFirestoreEventLoggerImplTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
+
+    @LogFilePath
+    @Provides
+    fun provideLogFilePath(context: Context): String {
+      return File(context.filesDir, "oppia_app.log").absolutePath
+    }
 
     @Provides
     @Singleton

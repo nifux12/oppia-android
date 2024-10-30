@@ -1,7 +1,9 @@
 package org.oppia.android.util.logging
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
+import java.io.File
 import javax.inject.Singleton
 
 // TODO(#59): Introduce flavor-specific modules that configure logging settings based on what's reasonable (e.g. prod
@@ -14,6 +16,13 @@ class LoggerModule {
   @Singleton
   fun provideEnableConsoleLog(): Boolean {
     return true
+  }
+
+  @Provides
+  @Singleton
+  @LogFilePath
+  fun provideLogFilePath(context: Context): String {
+    return File(context.filesDir, "oppia_app.log").absolutePath
   }
 
   @Provides

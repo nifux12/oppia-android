@@ -34,6 +34,7 @@ import org.robolectric.annotation.LooperMode
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.junit.After
 
 @Suppress("FunctionName")
 @RunWith(OppiaParameterizedTestRunner::class)
@@ -44,6 +45,7 @@ import javax.inject.Singleton
 )
 class ConsoleLoggerTest {
   private companion object {
+    private const val TEST_LOG_PATH = "build/tmp/test_logs/oppia_app.log"
     private const val testTag = "tag"
     private val testLogLevel: LogLevel = LogLevel.ERROR
     private const val testMessage = "test error message"
@@ -55,13 +57,23 @@ class ConsoleLoggerTest {
   @field:[Inject BackgroundTestDispatcher]
   lateinit var backgroundTestDispatcher: TestCoroutineDispatcher
 
-  private lateinit var logFile: File
+  @Inject @LogFilePath lateinit var logFilePath: String
+  private val logFile: File by lazy { File(logFilePath) }
 
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    logFile = File(context.filesDir, "oppia_app.log")
-    logFile.delete() // Ensure we start with a clean log file.
+    cleanLogDirectory()
+  }
+
+  @After
+  fun tearDown() {
+    cleanLogDirectory()
+  }
+
+  private fun cleanLogDirectory() {
+    logFile.parentFile?.deleteRecursively()
+    logFile.parentFile?.mkdirs()
   }
 
   @Test
@@ -85,6 +97,7 @@ class ConsoleLoggerTest {
   fun testConsoleLogger_multipleLogCalls_appendsToFile() {
     consoleLogger.e(testTag, "Error 1")
     testCoroutineDispatchers.advanceUntilIdle()
+
     consoleLogger.e(testTag, "Error 2")
     testCoroutineDispatchers.advanceUntilIdle()
 
@@ -93,21 +106,17 @@ class ConsoleLoggerTest {
     assertThat(logContent).contains("Error 2")
     assertThat(logContent.indexOf("Error 1")).isLessThan(logContent.indexOf("Error 2"))
   }
+
   @Test
   fun testConsoleLogger_closeAndReopen_continuesToAppend() {
-    consoleLogger.e(testTag, "Error before close")
+    consoleLogger.e("tag", "Error before close")
     testCoroutineDispatchers.advanceUntilIdle()
 
-    // Simulate closing by deleting the log file.
     logFile.delete()
     testCoroutineDispatchers.advanceUntilIdle()
 
-    consoleLogger.e(testTag, "Error after reopen")
+    consoleLogger.e("tag", "Error after reopen")
     testCoroutineDispatchers.advanceUntilIdle()
-
-    if (!logFile.exists()) {
-      logFile.createNewFile()
-    }
 
     val logContent = logFile.readText()
     assertThat(logContent).contains("Error before close")
@@ -124,9 +133,12 @@ class ConsoleLoggerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
+
+    @Provides
+    @Singleton
+    @LogFilePath
+    fun provideLogFilePath(): String = TEST_LOG_PATH
 
     @Provides
     @Singleton
