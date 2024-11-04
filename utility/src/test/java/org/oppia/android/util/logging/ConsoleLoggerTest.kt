@@ -8,6 +8,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
@@ -32,7 +33,6 @@ import java.io.File
 import java.io.PrintWriter
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Suppress("FunctionName")
 @RunWith(OppiaParameterizedTestRunner::class)
