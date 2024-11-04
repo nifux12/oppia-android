@@ -32,6 +32,7 @@ import java.io.File
 import java.io.PrintWriter
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @Suppress("FunctionName")
 @RunWith(OppiaParameterizedTestRunner::class)
@@ -92,6 +93,7 @@ class ConsoleLoggerTest {
   }
 
   @Test
+  @OptIn(ExperimentalCoroutinesApi::class)
   fun testConsoleLogger_closeAndReopen_continuesToAppend() = runTest {
     logTestMessage("first $testMessage")
 
