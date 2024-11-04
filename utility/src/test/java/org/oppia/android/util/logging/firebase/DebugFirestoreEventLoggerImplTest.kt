@@ -22,11 +22,9 @@ import org.oppia.android.util.locale.testing.LocaleTestModule
 import org.oppia.android.util.logging.EnableConsoleLog
 import org.oppia.android.util.logging.EnableFileLog
 import org.oppia.android.util.logging.GlobalLogLevel
-import org.oppia.android.util.logging.LogFilePath
 import org.oppia.android.util.logging.LogLevel
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -160,12 +158,6 @@ class DebugFirestoreEventLoggerImplTest {
     @GlobalLogLevel
     @Provides
     fun provideGlobalLogLevel(): LogLevel = LogLevel.VERBOSE
-
-    @LogFilePath
-    @Provides
-    fun provideLogFilePath(context: Context): String {
-      return File(context.filesDir, "oppia_app.log").absolutePath
-    }
 
     @Provides
     @Singleton

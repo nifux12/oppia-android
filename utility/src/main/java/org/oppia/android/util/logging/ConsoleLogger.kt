@@ -1,5 +1,6 @@
 package org.oppia.android.util.logging
 
+import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -18,25 +19,23 @@ import javax.inject.Singleton
 /** Wrapper class for Android logcat and file logging. All logs in the app should use this class. */
 @Singleton
 class ConsoleLogger @Inject constructor(
+  context: Context,
   @BlockingDispatcher private val blockingDispatcher: CoroutineDispatcher,
   @EnableConsoleLog private val enableConsoleLog: Boolean,
   @EnableFileLog private val enableFileLog: Boolean,
   @GlobalLogLevel private val globalLogLevel: LogLevel,
-  @LogFilePath private val logFilePath: String,
   private val machineLocale: OppiaLocale.MachineLocale
 ) {
   private val blockingScope = CoroutineScope(blockingDispatcher)
-  private val logDirectory = File(logFilePath)
-  private var printWriter: PrintWriter? = null
+  private val logDirectory = File(context.filesDir, "oppia_app.log")
+
   private val _logErrorMessagesFlow = MutableSharedFlow<ConsoleLoggerContext>()
   /**
    * A flow that emits a [ConsoleLoggerContext] when a error message is logged.
    */
   val logErrorMessagesFlow: SharedFlow<ConsoleLoggerContext> = _logErrorMessagesFlow
 
-  init {
-    logDirectory.parentFile?.mkdirs()
-  }
+  private var printWriter: PrintWriter? = null
 
   /** Logs a verbose message with the specified tag. */
   fun v(tag: String, msg: String) {
