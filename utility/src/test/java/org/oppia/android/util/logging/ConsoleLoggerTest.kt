@@ -57,46 +57,43 @@ class ConsoleLoggerTest {
 
   @Before
   fun setUp() {
-    setUpTestApplicationComponentWithFileLogging()
+    setUpTestApplicationComponent()
     // Initialize logFile and ensure parent directories exist
     logFile = File(context.filesDir, "oppia_app.log")
     logFile.parentFile?.mkdirs()
-    // Clean up any existing log file
     logFile.delete()
   }
 
   @After
   fun tearDown() {
-    // Clean up log file after test
     logFile.delete()
   }
 
-  private fun setUpTestApplicationComponentWithFileLogging() {
-    ApplicationProvider.getApplicationContext<TestApplication>().inject(this)
-    // Override file logging setting
-    val enableFileLogField = ConsoleLogger::class.java.getDeclaredField("enableFileLog")
-    enableFileLogField.isAccessible = true
-    enableFileLogField.set(consoleLogger, true)
+  private fun logTestMessage(message: String) {
+    when (testLogLevel) {
+      LogLevel.VERBOSE -> consoleLogger.v(testTag, message)
+      LogLevel.DEBUG -> consoleLogger.d(testTag, message)
+      LogLevel.INFO -> consoleLogger.i(testTag, message)
+      LogLevel.WARNING -> consoleLogger.w(testTag, message)
+      LogLevel.ERROR -> consoleLogger.e(testTag, message)
+    }
+    testCoroutineDispatchers.advanceUntilIdle()
   }
 
   @Test
   fun testConsoleLogger_multipleLogCalls_appendsToFile() {
-    consoleLogger.e(testTag, "Error 1")
-    testCoroutineDispatchers.advanceUntilIdle()
-    consoleLogger.e(testTag, "Error 2")
-    testCoroutineDispatchers.advanceUntilIdle()
+    logTestMessage(testMessage)
+    logTestMessage("$testMessage 2")
 
     val logContent = logFile.readText()
-    assertThat(logContent).contains("Error 1")
-    assertThat(logContent).contains("Error 2")
-    assertThat(logContent.indexOf("Error 1")).isLessThan(logContent.indexOf("Error 2"))
+    assertThat(logContent).contains(testMessage)
+    assertThat(logContent).contains("$testMessage 2")
+    assertThat(logContent.indexOf(testMessage)).isLessThan(logContent.indexOf("$testMessage 2"))
   }
 
   @Test
   fun testConsoleLogger_closeAndReopen_continuesToAppend() = runTest {
-    // Write initial log message
-    consoleLogger.e(testTag, "first message")
-    testCoroutineDispatchers.advanceUntilIdle()
+    logTestMessage("first $testMessage")
 
     // Force close the PrintWriter to simulate app restart
     val printWriterField = ConsoleLogger::class.java.getDeclaredField("printWriter")
@@ -104,14 +101,11 @@ class ConsoleLoggerTest {
     (printWriterField.get(consoleLogger) as? PrintWriter)?.close()
     printWriterField.set(consoleLogger, null)
 
-    // Write second message after "reopening"
-    consoleLogger.e(testTag, "second message")
-    testCoroutineDispatchers.advanceUntilIdle()
+    logTestMessage("second $testMessage")
 
-    // Verify log contents
     val logContent = logFile.readText()
-    assertThat(logContent).contains("first message")
-    assertThat(logContent).contains("second message")
+    assertThat(logContent).contains("first $testMessage")
+    assertThat(logContent).contains("second $testMessage")
   }
 
   private fun setUpTestApplicationComponent() {
@@ -122,9 +116,7 @@ class ConsoleLoggerTest {
   class TestModule {
     @Provides
     @Singleton
-    fun provideContext(application: Application): Context {
-      return application
-    }
+    fun provideContext(application: Application): Context = application
 
     @Provides
     @Singleton
