@@ -31,12 +31,14 @@ jobs:
             const { owner, repo } = context.repo;
             const { head_sha } = context.payload.workflow_run;
 
+
             // Search for PR associated with this commit
             const result = await github.rest.repos.listPullRequestsAssociatedWithCommit({
               owner,
               repo,
               commit_sha: head_sha
             });
+
 
             if (result.data.length === 0) {
               console.log('No PR found for this commit');
@@ -53,4 +55,6 @@ jobs:
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ steps.find-pr.outputs.pr_number }}
+
           body-file: 'CoverageReport.md'
+
