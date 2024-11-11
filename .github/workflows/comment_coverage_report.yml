@@ -20,8 +20,6 @@ jobs:
       - name: Wait for code coverage to complete
         id: wait-for-coverage
         uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
         with:
           workflow: code_coverage.yml
           sha: auto
