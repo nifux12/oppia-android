@@ -36,7 +36,7 @@ jobs:
         id: find-workflow-run
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }} 
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { owner, repo } = context.repo;
             const runsResponse = await github.rest.actions.listWorkflowRuns({
@@ -69,5 +69,6 @@ jobs:
       - name: Upload Coverage Report as PR Comment
         uses: peter-evans/create-or-update-comment@v4
         with:
+          token: ${{ secrets.GITHUB_TOKEN }} 
           issue-number: ${{ github.event.pull_request.number }}
-          body-path: './CoverageReport.md' 
+          body-path: './CoverageReport.md'
