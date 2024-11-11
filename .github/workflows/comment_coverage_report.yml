@@ -27,6 +27,7 @@ jobs:
     needs: check_code_coverage_completed
     permissions:
       pull-requests: write
+      issues: write
       contents: read 
 
     if: ${{ !cancelled() }}
