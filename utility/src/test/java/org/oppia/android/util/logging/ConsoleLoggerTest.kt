@@ -8,8 +8,11 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -44,7 +47,6 @@ import javax.inject.Singleton
 class ConsoleLoggerTest {
   private companion object {
     private const val testTag = "tag"
-    private val testLogLevel: LogLevel = LogLevel.ERROR
     private const val testMessage = "test error message"
   }
 
@@ -59,9 +61,7 @@ class ConsoleLoggerTest {
   @Before
   fun setUp() {
     setUpTestApplicationComponent()
-    // Initialize logFile and ensure parent directories exist
     logFile = File(context.filesDir, "oppia_app.log")
-    logFile.parentFile?.mkdirs()
     logFile.delete()
   }
 
@@ -70,21 +70,11 @@ class ConsoleLoggerTest {
     logFile.delete()
   }
 
-  private fun logTestMessage(message: String) {
-    when (testLogLevel) {
-      LogLevel.VERBOSE -> consoleLogger.v(testTag, message)
-      LogLevel.DEBUG -> consoleLogger.d(testTag, message)
-      LogLevel.INFO -> consoleLogger.i(testTag, message)
-      LogLevel.WARNING -> consoleLogger.w(testTag, message)
-      LogLevel.ERROR -> consoleLogger.e(testTag, message)
-    }
-    testCoroutineDispatchers.advanceUntilIdle()
-  }
-
   @Test
   fun testConsoleLogger_multipleLogCalls_appendsToFile() {
-    logTestMessage(testMessage)
-    logTestMessage("$testMessage 2")
+    consoleLogger.e(testTag, testMessage)
+    consoleLogger.e(testTag, "$testMessage 2")
+    testCoroutineDispatchers.advanceUntilIdle()
 
     val logContent = logFile.readText()
     assertThat(logContent).contains(testMessage)
@@ -94,8 +84,16 @@ class ConsoleLoggerTest {
 
   @Test
   @OptIn(ExperimentalCoroutinesApi::class)
-  fun testConsoleLogger_closeAndReopen_continuesToAppend() = runTest {
-    logTestMessage("first $testMessage")
+  fun testConsoleLogger_logError_withMessage_logsMessage() {
+    val firstErrorContextsDeferred = CoroutineScope(backgroundTestDispatcher).async {
+      consoleLogger.logErrorMessagesFlow.take(1).toList()
+    }
+  }
+
+  @Test
+  fun testConsoleLogger_closeAndReopen_continuesToAppend() {
+    consoleLogger.e(testTag, "first $testMessage")
+    testCoroutineDispatchers.advanceUntilIdle()
 
     // Force close the PrintWriter to simulate app restart
     val printWriterField = ConsoleLogger::class.java.getDeclaredField("printWriter")
@@ -103,7 +101,9 @@ class ConsoleLoggerTest {
     (printWriterField.get(consoleLogger) as? PrintWriter)?.close()
     printWriterField.set(consoleLogger, null)
 
-    logTestMessage("second $testMessage")
+    consoleLogger.e(testTag, "first $testMessage")
+    consoleLogger.e(testTag, "second $testMessage")
+    testCoroutineDispatchers.advanceUntilIdle()
 
     val logContent = logFile.readText()
     assertThat(logContent).contains("first $testMessage")
