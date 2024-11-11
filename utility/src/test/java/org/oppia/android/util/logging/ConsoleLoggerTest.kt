@@ -47,6 +47,7 @@ import javax.inject.Singleton
 class ConsoleLoggerTest {
   private companion object {
     private const val testTag = "tag"
+    private val testLogLevel: LogLevel = LogLevel.ERROR
     private const val testMessage = "test error message"
   }
 
@@ -79,7 +80,8 @@ class ConsoleLoggerTest {
     val logContent = logFile.readText()
     assertThat(logContent).contains(testMessage)
     assertThat(logContent).contains("$testMessage 2")
-    assertThat(logContent.indexOf(testMessage)).isLessThan(logContent.indexOf("$testMessage 2"))
+    assertThat(logContent.indexOf(testMessage))
+      .isLessThan(logContent.indexOf("$testMessage 2"))
   }
 
   @Test
@@ -88,6 +90,15 @@ class ConsoleLoggerTest {
     val firstErrorContextsDeferred = CoroutineScope(backgroundTestDispatcher).async {
       consoleLogger.logErrorMessagesFlow.take(1).toList()
     }
+
+    testCoroutineDispatchers.advanceUntilIdle() // Ensure the flow is subscribed before emit().
+    consoleLogger.e(testTag, testMessage)
+    testCoroutineDispatchers.advanceUntilIdle()
+
+    val firstErrorContext = firstErrorContextsDeferred.getCompleted().single()
+    assertThat(firstErrorContext.logTag).isEqualTo(testTag)
+    assertThat(firstErrorContext.logLevel).isEqualTo(testLogLevel.toString())
+    assertThat(firstErrorContext.fullErrorLog).isEqualTo(testMessage)
   }
 
   @Test
