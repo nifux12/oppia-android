@@ -16,7 +16,7 @@ jobs:
     name: Check code coverage completed
     runs-on: ubuntu-latest
     outputs:
-      conclusion: ${{ steps.check-conclusion.outputs.conclusion }}
+      conclusion: ${{ steps.wait-for-coverage.outputs.conclusion }}
     steps:
       - name: Wait for code coverage to complete
         id: wait-for-coverage
@@ -29,14 +29,10 @@ jobs:
             failure
             action_required
 
-      - name: Check conclusion
-        id: check-conclusion
+      - name: Print status message
+        if: steps.wait-for-coverage.outputs.conclusion == 'action_required'
         run: |
-          CONCLUSION="${{ steps.wait-for-coverage.outputs.conclusion }}"
-          echo "conclusion=$CONCLUSION" >> $GITHUB_OUTPUT
-          if [ "$CONCLUSION" = "action_required" ]; then
-            echo "Code coverage workflow requires manual approval. Skipping coverage report generation until approval is granted."
-          fi
+          echo "Code coverage workflow requires manual approval. Skipping coverage report generation until approval is granted."
 
   comment_coverage_report:
     name: Comment Code Coverage Report
