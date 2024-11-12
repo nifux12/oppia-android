@@ -1,6 +1,5 @@
 name: Comment Coverage Report
 
-
 on:
   workflow_run:
     workflows: ["Code Coverage Report Analysis"]
