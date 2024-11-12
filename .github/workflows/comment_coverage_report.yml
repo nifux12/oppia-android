@@ -1,8 +1,12 @@
+# A separate workflow to comment the coverage report on the pull request
+
 name: Comment Coverage Report
+
+# This triggers the workflow when the Code Coverage Report workflow completes
 
 on:
   workflow_run:
-    workflows: ["Code Coverage Report Analysis"]
+    workflows: ["Code Coverage Report"]
     types: [completed]
 
 jobs:
@@ -34,3 +38,4 @@ jobs:
         with:
           issue-number: ${{ steps.source-run-info.outputs.pullRequestNumber }}
           body-path: 'CoverageReport.md'
+          
