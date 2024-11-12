@@ -16,7 +16,7 @@ jobs:
     name: Check code coverage completed
     runs-on: ubuntu-latest
     outputs:
-      conclusion: ${{ steps.wait-for-coverage.outputs.conclusion }}
+      conclusion: ${{ steps.check-conclusion.outputs.conclusion }}
     steps:
       - name: Wait for code coverage to complete
         id: wait-for-coverage
@@ -28,21 +28,24 @@ jobs:
             success
             failure
             action_required
-      
-      - name: Print status message
-        if: ${{ steps.wait-for-coverage.outputs.conclusion == 'action_required' }}
+
+      - name: Check conclusion
+        id: check-conclusion
         run: |
-          echo "Code coverage workflow requires manual approval. Skipping coverage report generation until approval is granted."
+          CONCLUSION="${{ steps.wait-for-coverage.outputs.conclusion }}"
+          echo "conclusion=$CONCLUSION" >> $GITHUB_OUTPUT
+          if [ "$CONCLUSION" = "action_required" ]; then
+            echo "Code coverage workflow requires manual approval. Skipping coverage report generation until approval is granted."
+          fi
 
   comment_coverage_report:
     name: Comment Code Coverage Report
     needs: check_code_coverage_completed
-    permissions:
-      pull-requests: write
-    # Skip this job if the conclusion is action_required or if the workflow was cancelled
     if: |
       needs.check_code_coverage_completed.outputs.conclusion != 'action_required' &&
       !cancelled()
+    permissions:
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Find CI workflow run for PR
@@ -72,7 +75,6 @@ jobs:
       - name: Download Generated Markdown Report
         uses: actions/download-artifact@v4
         if: ${{ !cancelled() }}
-        # IMPORTANT: Upload reports regardless of success or failure status
         with:
           name: final-coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
