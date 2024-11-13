@@ -17,6 +17,8 @@ jobs:
   check_code_coverage_completed:
     name: Check code coverage completed
     runs-on: ubuntu-latest
+    outputs:
+      conclusion: ${{ steps.wait-for-coverage.outputs.run-conclusion }}
     steps:
       - name: Wait for code coverage to complete
         id: wait-for-coverage
@@ -27,6 +29,11 @@ jobs:
           allowed-conclusions: |
             success
             failure
+            action_required
+      - name: Conclusion Analysis
+        if: steps.wait-for-coverage.outputs.run-conclusion == 'action_required'
+        run: |
+          echo "::notice::Code coverage workflow requires manual approval. After approval, please re-run this workflow to post the coverage report."
 
   comment_coverage_report:
     name: Comment Code Coverage Report
@@ -34,9 +41,12 @@ jobs:
     permissions:
       pull-requests: write
 
-    # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-    # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-    if: ${{ !cancelled() }}
+    # The expression if: ${{ !cancelled() && needs.check_code_coverage_completed.outputs.conclusion != 'action_required' }}
+    # ensures that this job only runs if the previous job was not cancelled and does not require manual approval.
+    # This check prevents running the job unnecessarily when a manual approval is needed.
+    if: |
+      !cancelled() &&
+      needs.check_code_coverage_completed.outputs.conclusion != 'action_required'
     runs-on: ubuntu-latest
     steps:
       - name: Find CI workflow run for PR
@@ -60,7 +70,7 @@ jobs:
 
             const run = runs[0];
             if(!run) {
-              core.setFailed('Could not find a succesful workflow run for the PR');
+              core.setFailed('Could not find a successful workflow run for the PR');
               return;
             }
 
