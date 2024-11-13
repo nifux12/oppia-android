@@ -41,11 +41,11 @@ jobs:
     permissions:
       pull-requests: write
 
-    # The expression if: ${{ !cancelled() && needs.check_code_coverage_completed.outputs.conclusion != 'action_required' }}
-    # ensures that this job only runs if the previous job was not cancelled and does not require manual approval.
+    # The expression if: ${{ !cancelled() && needs.check_code_coverage_completed.outputs.conclusion != 'action_required' }} 
+    # ensures that this job only runs if the previous job was not cancelled and does not require manual approval. 
     # This check prevents running the job unnecessarily when a manual approval is needed.
     if: |
-      !cancelled() &&
+      !cancelled() && 
       needs.check_code_coverage_completed.outputs.conclusion != 'action_required'
     runs-on: ubuntu-latest
     steps:
