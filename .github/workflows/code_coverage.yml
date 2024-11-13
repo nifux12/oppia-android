@@ -1,5 +1,6 @@
 # Contains jobs corresponding to code coverage.
 
+
 name: Code Coverage
 
 # Controls when the action will run. Triggers the workflow on pull request
