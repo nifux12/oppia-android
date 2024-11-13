@@ -26,6 +26,10 @@ jobs:
             success
             failure
             action_required
+      - name: Debug all outputs from wait-for-coverage
+        run: |
+          echo "All outputs from wait-for-coverage:"
+          echo "${{ toJson(steps.wait-for-coverage.outputs) }}"
       - name: Log conclusion value
         run: |
           echo "Code coverage workflow conclusion: ${{ steps.wait-for-coverage.outputs.conclusion }}"
