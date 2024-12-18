@@ -316,7 +316,7 @@ class CustomHtmlContentHandlerTest {
     return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
   }
 
-  private class FakeTagHandler : CustomHtmlContentHandler.CustomTagHandler {
+  private class FakeTagHandler : CustomTagHandler {
     var handleTagCalled = false
     var handleTagCallIndex = -1
     var handleOpeningTagCalled = false
@@ -358,7 +358,7 @@ class CustomHtmlContentHandlerTest {
 
   private class ReplacingTagHandler(
     private val attributeTextToReplaceWith: String
-  ) : CustomHtmlContentHandler.CustomTagHandler {
+  ) : CustomTagHandler {
     override fun handleTag(
       attributes: Attributes,
       openIndex: Int,
