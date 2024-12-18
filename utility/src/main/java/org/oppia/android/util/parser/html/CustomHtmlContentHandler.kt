@@ -11,7 +11,7 @@ import org.xml.sax.Attributes
 import org.xml.sax.ContentHandler
 import org.xml.sax.Locator
 import org.xml.sax.XMLReader
-// https://chatgpt.com/c/6761e49f-6824-8003-b645-7913e8c73bbc
+
 /**
  * A custom [ContentHandler] and [Html.TagHandler] for processing custom HTML tags. This class must
  * be used if a custom tag attribute must be parsed.
