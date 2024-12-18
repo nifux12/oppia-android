@@ -47,6 +47,7 @@ class CustomHtmlContentHandler private constructor(
     originalContentHandler?.characters(ch, start, length)
   }
 
+
   override fun endDocument() {
     originalContentHandler?.endDocument()
     originalContentHandler = null // There's nothing left to read.
