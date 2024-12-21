@@ -194,6 +194,8 @@ class CustomHtmlContentHandler private constructor(
      */
     fun handleClosingTag(output: Editable, indentation: Int, tag: String) {}
   }
+
+  /** Handler Interface for tag handlers that provide content descriptions */
   interface ContentDescriptionProvider {
     /**
      * Returns a content description string for this tag based on its attributes,
@@ -201,6 +203,7 @@ class CustomHtmlContentHandler private constructor(
      */
     fun getContentDescription(attributes: Attributes): String?
   }
+
   /**
    * Retriever of images for custom tag handlers. The built-in Android analog for this class is
    * Html's ImageGetter.
