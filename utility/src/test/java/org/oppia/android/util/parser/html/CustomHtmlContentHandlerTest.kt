@@ -298,6 +298,23 @@ class CustomHtmlContentHandlerTest {
     assertThat(jsonObject?.getString("key")).isEqualTo("value with \\frac{1}{2}")
   }
 
+  @Test
+  fun testGetContentDescription_withNestedTags_handlesNestingCorrectly() {
+    val outerHandler = FakeContentDescriptionTagHandler("Outer Tag ")
+    val innerHandler = FakeContentDescriptionTagHandler("Inner Tag ")
+
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html = "<outer-tag>before <inner-tag>nested</inner-tag> after</outer-tag>",
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = mapOf(
+        "outer-tag" to outerHandler,
+        "inner-tag" to innerHandler
+      )
+    )
+
+    assertThat(contentDescription).isEqualTo("Outer Tag before Inner Tag nested after")
+  }
+
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
@@ -315,7 +332,22 @@ class CustomHtmlContentHandlerTest {
     val formattingLocale = androidLocaleFactory.createOneOffAndroidLocale(context)
     return DisplayLocaleImpl(context, formattingLocale, machineLocale, formatterFactory)
   }
+  private class FakeContentDescriptionTagHandler(
+    private val contentDesc: String
+  ) : CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
+    override fun handleTag(
+      attributes: Attributes,
+      openIndex: Int,
+      closeIndex: Int,
+      output: Editable,
+      imageRetriever: CustomHtmlContentHandler.ImageRetriever?
+    ) {
+    }
 
+    override fun getContentDescription(attributes: Attributes): String {
+      return contentDesc
+    }
+  }
   private class FakeTagHandler : CustomTagHandler {
     var handleTagCalled = false
     var handleTagCallIndex = -1

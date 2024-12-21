@@ -116,6 +116,16 @@ class ConceptCardTagHandlerTest {
     val clickableSpans = parsedHtml.getSpansFromWholeString(ClickableSpan::class)
     assertThat(clickableSpans).hasLength(1)
   }
+  @Test
+  fun testParseHtml_contentDescription() {
+    val parsedHtml =
+      CustomHtmlContentHandler.getContentDescription(
+        html = CONCEPT_CARD_LINK_MARKUP_1,
+        imageRetriever = mockImageRetriever,
+        customTagHandlers = tagHandlersWithConceptCardSupport
+      )
+      assertThat(parsedHtml).isEqualTo("refresher lesson concept card")
+  }
 
   @Test
   fun testParseHtml_withConceptCardMarkup_addsLinkText() {

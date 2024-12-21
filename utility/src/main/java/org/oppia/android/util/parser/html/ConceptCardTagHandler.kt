@@ -15,7 +15,7 @@ const val CUSTOM_CONCEPT_CARD_TAG = "oppia-noninteractive-skillreview"
 class ConceptCardTagHandler(
   private val listener: ConceptCardLinkClickListener,
   private val consoleLogger: ConsoleLogger
-) : CustomHtmlContentHandler.CustomTagHandler {
+) : CustomHtmlContentHandler.CustomTagHandler, CustomHtmlContentHandler.ContentDescriptionProvider {
   override fun handleTag(
     attributes: Attributes,
     openIndex: Int,
@@ -47,5 +47,13 @@ class ConceptCardTagHandler(
      * specified skill ID.
      */
     fun onConceptCardLinkClicked(view: View, skillId: String)
+  }
+
+  override fun getContentDescription(attributes: Attributes): String? {
+    val skillId = attributes.getJsonStringValue("skill_id-with-value")
+    val text = attributes.getJsonStringValue("text-with-value")
+    return if (skillId != null && text != null) {
+      "$text concept card"
+    } else null
   }
 }
