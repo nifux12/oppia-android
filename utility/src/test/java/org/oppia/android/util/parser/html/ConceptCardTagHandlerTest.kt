@@ -124,7 +124,7 @@ class ConceptCardTagHandlerTest {
         imageRetriever = mockImageRetriever,
         customTagHandlers = tagHandlersWithConceptCardSupport
       )
-      assertThat(parsedHtml).isEqualTo("refresher lesson concept card")
+    assertThat(parsedHtml).isEqualTo("refresher lesson concept card")
   }
 
   @Test
