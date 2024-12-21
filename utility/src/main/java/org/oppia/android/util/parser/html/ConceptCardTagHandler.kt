@@ -53,7 +53,7 @@ class ConceptCardTagHandler(
     val skillId = attributes.getJsonStringValue("skill_id-with-value")
     val text = attributes.getJsonStringValue("text-with-value")
     return if (skillId != null && text != null) {
-      "$text concept card"
+      "$text concept card $skillId"
     } else null
   }
 }

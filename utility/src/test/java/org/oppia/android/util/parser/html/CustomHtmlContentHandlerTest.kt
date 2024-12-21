@@ -315,6 +315,22 @@ class CustomHtmlContentHandlerTest {
     assertThat(contentDescription).isEqualTo("Outer Tag before Inner Tag nested after")
   }
 
+  @Test
+  fun testGetContentDescription_withMultipleTags_preservesOrder() {
+    val firstHandler = FakeContentDescriptionTagHandler("First ")
+    val secondHandler = FakeContentDescriptionTagHandler("Second ")
+    val contentDescription = CustomHtmlContentHandler.getContentDescription(
+      html = "Start <first-tag>one</first-tag> middle <second-tag>two</second-tag> end",
+      imageRetriever = mockImageRetriever,
+      customTagHandlers = mapOf(
+        "first-tag" to firstHandler,
+        "second-tag" to secondHandler
+      )
+    )
+
+    assertThat(contentDescription).isEqualTo("Start First one middle Second two end")
+  }
+
   private fun <T : Any> Spannable.getSpansFromWholeString(spanClass: KClass<T>): Array<T> =
     getSpans(/* start= */ 0, /* end= */ length, spanClass.javaObjectType)
 
