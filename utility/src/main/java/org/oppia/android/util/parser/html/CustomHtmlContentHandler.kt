@@ -195,7 +195,7 @@ class CustomHtmlContentHandler private constructor(
     fun handleClosingTag(output: Editable, indentation: Int, tag: String) {}
   }
 
-  /** Handler Interface for tag handlers that provide content descriptions */
+  /** Handler Interface for tag handlers that provide content descriptions. */
   interface ContentDescriptionProvider {
     /**
      * Returns a content description string for this tag based on its attributes,
