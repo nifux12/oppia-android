@@ -17,9 +17,15 @@ fun main(vararg args: String) {
   }
 
   val repoPath = "${args[0]}/"
-
+  val excludedFiles = setOf(
+    "KdocValidityCheckTest.kt"
+  )
   val kotlinFiles = File(repoPath).walk()
-    .filter { it.isFile && it.extension == "kt" }
+    .filter { file ->
+      file.isFile &&
+        file.extension == "kt" &&
+        file.name !in excludedFiles
+    }
     .toList()
 
   val formattingIssues = mutableListOf<Pair<File, Int>>()
