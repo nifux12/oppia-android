@@ -189,6 +189,15 @@ kt_jvm_binary(
     ],
 )
 
+kt_jvm_binary(
+    name = "kdoc_format_check",
+    testonly = True,
+    main_class = "org.oppia.android.scripts.docs.KdocFormatCheckKt",
+    runtime_deps = [
+        "//scripts/src/java/org/oppia/android/scripts/docs:kdoc_format_check_lib",
+    ],
+)
+
 KDOC_VALIDITY_EXEMPTION_ASSETS = generate_kdoc_validity_assets_list_from_text_protos(
     name = "kdoc_validity_exemption_assets",
     kdoc_validity_exemptions_name = ["kdoc_validity_exemptions"],

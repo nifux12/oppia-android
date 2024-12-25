@@ -15,3 +15,15 @@ kt_jvm_library(
         "//third_party:org_jetbrains_kotlin_kotlin-compiler-embeddable",
     ],
 )
+
+kt_jvm_library(
+    name = "kdoc_format_check_lib",
+    testonly = True,
+    srcs = ["KdocFormatCheck.kt"],
+    visibility = ["//scripts:oppia_script_binary_visibility"],
+    deps = [
+        # We only need the Kotlin compiler dependency since we're just parsing
+        # and analyzing Kotlin files, not handling repository files or proto exemptions
+        "//third_party:org_jetbrains_kotlin_kotlin-compiler-embeddable",
+    ],
+)

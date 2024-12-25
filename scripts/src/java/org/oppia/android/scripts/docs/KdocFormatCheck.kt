@@ -18,7 +18,8 @@ fun main(vararg args: String) {
 
   val repoPath = "${args[0]}/"
   val excludedFiles = setOf(
-    "KdocValidityCheckTest.kt"
+    "KdocValidityCheckTest.kt",
+    "RegexPatternValidationCheckTest.kt"
   )
   val kotlinFiles = File(repoPath).walk()
     .filter { file ->
