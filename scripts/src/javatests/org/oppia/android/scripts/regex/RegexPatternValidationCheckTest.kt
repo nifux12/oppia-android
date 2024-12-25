@@ -2578,7 +2578,7 @@ class RegexPatternValidationCheckTest {
          */
         /**
          * Incorrect KDoc comment.
-         **/
+         */
         /**
          * Correct KDoc comment.
          */
