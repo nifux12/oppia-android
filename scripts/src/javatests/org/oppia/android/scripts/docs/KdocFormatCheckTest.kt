@@ -1,5 +1,6 @@
 package org.oppia.android.scripts.docs
 
+import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -7,9 +8,7 @@ import org.junit.Test
 import org.junit.rules.TemporaryFolder
 import org.oppia.android.testing.assertThrows
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.PrintStream
-import com.google.common.truth.Truth.assertThat
 
 private const val KDOC_CHECK_PASSED_OUTPUT_INDICATOR = "KDOC CLOSING TAG CHECK PASSED"
 private const val KDOC_CHECK_FAILED_OUTPUT_INDICATOR = "KDOC CLOSING TAG CHECK FAILED"
@@ -34,14 +33,15 @@ class KdocFormatCheckTest {
 
   @Test
   fun testKdoc_validClosingTag_checkShouldPass() {
-    val testContent = """
+    val testContent =
+      """
       /**
        * Returns the string corresponding to this error's string resources.
        */
       fun getErrorMessage(): String {
         return "test"
       }
-    """.trimIndent()
+      """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
@@ -52,26 +52,31 @@ class KdocFormatCheckTest {
 
   @Test
   fun testKdoc_extraAsteriskInClosingTag_checkShouldFail() {
-    val testContent = """
+    val testContent =
+      """
       /**
        * Returns the string corresponding to this error's string resources.
        **/
       fun getErrorMessage(): String {
         return "test"
       }
-    """.trimIndent()
+      """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
     val exception = assertThrows<Exception> { runScript() }
 
     assertThat(exception).hasMessageThat().contains(KDOC_CHECK_FAILED_OUTPUT_INDICATOR)
-    assertThat(outContent.toString()).contains("${tempFile.path}:3 - Extra asterisk found in KDoc closing tag")
+    assertThat(outContent.toString()).contains(
+      "${tempFile.path}:3 - Extra asterisk" +
+        " found in KDoc closing tag"
+    )
   }
 
   @Test
   fun testKdoc_multipleDocsWithExtraAsterisks_checksAllTags() {
-    val testContent = """
+    val testContent =
+      """
       /**
        * First KDoc comment.
        **/
@@ -81,7 +86,7 @@ class KdocFormatCheckTest {
        * Second KDoc comment.
        **/
       val test2 = ""
-    """.trimIndent()
+      """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
@@ -95,12 +100,13 @@ class KdocFormatCheckTest {
 
   @Test
   fun testKdoc_blockCommentNotKdoc_checkShouldPass() {
-    val testContent = """
+    val testContent =
+      """
       /*
        * This is a block comment, not a KDoc.
        */
       val test = ""
-    """.trimIndent()
+      """.trimIndent()
     val tempFile = tempFolder.newFile("testfiles/TempFile.kt")
     tempFile.writeText(testContent)
 
@@ -111,18 +117,20 @@ class KdocFormatCheckTest {
 
   @Test
   fun testKdoc_multipleFiles_sortedOutput() {
-    val testContent1 = """
+    val testContent1 =
+      """
       /**
        * First file KDoc.
        **/
       val test = ""
-    """.trimIndent()
-    val testContent2 = """
+      """.trimIndent()
+    val testContent2 =
+      """
       /**
        * Second file KDoc.
        **/
       val test = ""
-    """.trimIndent()
+      """.trimIndent()
 
     val tempFile1 = tempFolder.newFile("testfiles/AFile.kt")
     val tempFile2 = tempFolder.newFile("testfiles/BFile.kt")
@@ -161,7 +169,10 @@ class KdocFormatCheckTest {
   fun testKdoc_noRepoPathProvided_printsError() {
     main()
 
-    assertThat(outContent.toString().trim()).isEqualTo("Please provide the repository path as an argument")
+    assertThat(outContent.toString().trim()).isEqualTo(
+      "Please provide" +
+        " the repository path as an argument"
+    )
   }
 
   /** Retrieves the absolute path of testfiles directory. */
