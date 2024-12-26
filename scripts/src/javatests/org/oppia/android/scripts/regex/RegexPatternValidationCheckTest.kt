@@ -2566,23 +2566,23 @@ class RegexPatternValidationCheckTest {
   fun testFileContent_multipleCommentTypesWithExtraCharactersBeforeEnd_fileContentIsNotCorrect() {
     val prohibitedContent =
       """
-        /** Content here.*/
-        /** Content here. **/
-        /** Correct KDoc. */
+      /** Content here.*/
+      /** Content here. **/
+      /** Correct KDoc. */
 
-        /*
-         * Incorrect block comment.
-         **/
-        /*
-         * Correct block comment.
-         */
-        /**
-         * Incorrect KDoc comment.
-         **/
-        /**
-         * Correct KDoc comment.
-         */
-      """.trimIndent()
+      /*
+       * Incorrect block comment.
+       **/
+      /*
+       * Correct block comment.
+       */
+      /**
+       * Incorrect KDoc comment.
+       * */
+      /**
+       * Correct KDoc comment.
+       */
+    """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
@@ -2596,14 +2596,15 @@ class RegexPatternValidationCheckTest {
     assertThat(outContent.toString().trim())
       .isEqualTo(
         """
-        $stringFilePath:1: $badSingleLineKdocShouldHaveSpacesBeforeEnding
-        $stringFilePath:2: $badSingleLineKdocShouldHaveSpacesBeforeEnding
-        $stringFilePath:2: $badKdocOrBlockCommentShouldEndWithCorrectEnding
-        $stringFilePath:7: $badKdocOrBlockCommentShouldEndWithCorrectEnding
-        $stringFilePath:13: $badKdocOrBlockCommentShouldEndWithCorrectEnding
-        $stringFilePath:2: $badSingleLineKdocShouldEndWithPunctuation
-        $wikiReferenceNote
-        """.trimIndent()
+      $stringFilePath:1: $badSingleLineKdocShouldHaveSpacesBeforeEnding
+      $stringFilePath:2: $badSingleLineKdocShouldHaveSpacesBeforeEnding
+      $stringFilePath:2: $badKdocOrBlockCommentShouldEndWithCorrectEnding
+      $stringFilePath:7: $badKdocOrBlockCommentShouldEndWithCorrectEnding
+      $stringFilePath:13: $badKdocOrBlockCommentShouldEndWithCorrectEnding
+      $stringFilePath:12: $badKdocOrBlockCommentShouldEndWithCorrectEnding
+      $stringFilePath:2: $badSingleLineKdocShouldEndWithPunctuation
+      $wikiReferenceNote
+      """.trimIndent()
       )
   }
 
