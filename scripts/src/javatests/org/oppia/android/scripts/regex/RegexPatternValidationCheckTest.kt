@@ -2582,7 +2582,7 @@ class RegexPatternValidationCheckTest {
       /**
        * Correct KDoc comment.
        */
-    """.trimIndent()
+      """.trimIndent()
     tempFolder.newFolder("testfiles", "app", "src", "main", "java", "org", "oppia", "android")
     val stringFilePath = "app/src/main/java/org/oppia/android/TestPresenter.kt"
     tempFolder.newFile("testfiles/$stringFilePath").writeText(prohibitedContent)
@@ -2604,7 +2604,7 @@ class RegexPatternValidationCheckTest {
       $stringFilePath:12: $badKdocOrBlockCommentShouldEndWithCorrectEnding
       $stringFilePath:2: $badSingleLineKdocShouldEndWithPunctuation
       $wikiReferenceNote
-      """.trimIndent()
+        """.trimIndent()
       )
   }
 
