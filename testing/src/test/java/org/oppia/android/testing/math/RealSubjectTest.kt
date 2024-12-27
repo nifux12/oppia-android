@@ -3,10 +3,10 @@ package org.oppia.android.testing.math
 import android.annotation.SuppressLint
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
-import org.oppia.android.app.model.Fraction
-import org.oppia.android.app.model.Real
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.oppia.android.app.model.Fraction
+import org.oppia.android.app.model.Real
 
 /** Tests for [RealSubject]. */
 @SuppressLint("CheckResult")
@@ -179,7 +179,6 @@ class RealSubjectTest {
 
     RealSubject.assertThat(real).isNotNull()
     RealSubject.assertThat(real).isNotEqualTo(Real.getDefaultInstance())
-
   }
 
   private fun <T : Throwable> assertThrows(
