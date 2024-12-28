@@ -8,6 +8,8 @@ import org.junit.runners.JUnit4
 import org.oppia.android.app.model.MathBinaryOperation
 import org.oppia.android.app.model.MathEquation
 import org.oppia.android.app.model.MathExpression
+import org.oppia.android.app.model.MathFunctionCall
+import org.oppia.android.app.model.MathUnaryOperation
 import org.oppia.android.app.model.Real
 
 /** Tests for [MathEquationSubject]. */
@@ -158,6 +160,197 @@ class MathEquationSubjectTest {
       }
     }
     assertThat(exception).hasMessageThat().contains("expected: 11")
+  }
+
+  @Test
+  fun testConvertsToLatex_withNestedOperations_producesCorrectString() {
+    val equation = createEquation(
+      leftSide = createBinaryOperation(
+        MathBinaryOperation.Operator.ADD,
+        createUnaryOperation(
+          MathUnaryOperation.Operator.NEGATE,
+          createConstantExpression(2)
+        ),
+        createBinaryOperation(
+          MathBinaryOperation.Operator.MULTIPLY,
+          createConstantExpression(3),
+          createVariableExpression("x")
+        )
+      ),
+      rightSide = createConstantExpression(0)
+    )
+
+    MathEquationSubject.assertThat(equation)
+      .convertsToLatexStringThat()
+      .isEqualTo("-2 + 3 \\times x = 0")
+  }
+
+  @Test
+  fun testConvertsToLatexWithFractions_nestedFractions_producesCorrectString() {
+    val equation = createEquation(
+      leftSide = createBinaryOperation(
+        MathBinaryOperation.Operator.DIVIDE,
+        createConstantExpression(1),
+        createBinaryOperation(
+          MathBinaryOperation.Operator.DIVIDE,
+          createConstantExpression(2),
+          createVariableExpression("x")
+        )
+      ),
+      rightSide = createConstantExpression(0)
+    )
+
+    MathEquationSubject.assertThat(equation)
+      .convertsWithFractionsToLatexStringThat()
+      .isEqualTo("\\frac{1}{\\frac{2}{x}} = 0")
+  }
+
+  @Test
+  fun testConvertsToLatex_withUnaryOperationInFraction_producesCorrectString() {
+    val equation = createEquation(
+      leftSide = createBinaryOperation(
+        MathBinaryOperation.Operator.DIVIDE,
+        createUnaryOperation(
+          MathUnaryOperation.Operator.NEGATE,
+          createConstantExpression(1)
+        ),
+        createConstantExpression(2)
+      ),
+      rightSide = createConstantExpression(0)
+    )
+
+    MathEquationSubject.assertThat(equation)
+      .convertsWithFractionsToLatexStringThat()
+      .isEqualTo("\\frac{-1}{2} = 0")
+  }
+
+  @Test
+  fun testConvertsToLatex_withFunctionCallInComplexExpression_producesCorrectString() {
+    val equation = createEquation(
+      leftSide = createBinaryOperation(
+        MathBinaryOperation.Operator.ADD,
+        createConstantExpression(1),
+        createFunctionCall(
+          MathFunctionCall.FunctionType.SQUARE_ROOT,
+          createBinaryOperation(
+            MathBinaryOperation.Operator.ADD,
+            createConstantExpression(4),
+            createVariableExpression("x")
+          )
+        )
+      ),
+      rightSide = createConstantExpression(0)
+    )
+
+    MathEquationSubject.assertThat(equation)
+      .convertsToLatexStringThat()
+      .isEqualTo("1 + \\sqrt{4 + x} = 0")
+  }
+
+  @Test
+  fun testConvertsToLatex_withInvalidExpression_fails() {
+    val equation = MathEquation.getDefaultInstance()
+
+    val exception = assertThrows(AssertionError::class.java) {
+      MathEquationSubject.assertThat(equation)
+        .convertsToLatexStringThat()
+        .isEqualTo("5 = 0")
+    }
+    assertThat(exception).hasMessageThat().contains("expected: 5 = 0\n" +
+      "but was :  =")
+  }
+
+  @Test
+  fun testConvertsWithFractionsToLatex_withInvalidExpression_fails() {
+    val equation = MathEquation.getDefaultInstance()
+
+    val exception = assertThrows(AssertionError::class.java) {
+      MathEquationSubject.assertThat(equation)
+        .convertsWithFractionsToLatexStringThat()
+        .isEqualTo("\\frac{1}{2} = 0")
+    }
+    assertThat(exception).hasMessageThat().contains("expected: \\frac{1}{2} = 0\n" +
+      "but was :  =")
+  }
+
+  @Test
+  fun testHasLeftHandSide_withComplexNestedExpression_matchesExpression() {
+    val equation = createEquation(
+      leftSide = createBinaryOperation(
+        MathBinaryOperation.Operator.ADD,
+        createFunctionCall(
+          MathFunctionCall.FunctionType.SQUARE_ROOT,
+          createBinaryOperation(
+            MathBinaryOperation.Operator.MULTIPLY,
+            createConstantExpression(4),
+            createVariableExpression("x")
+          )
+        ),
+        createUnaryOperation(
+          MathUnaryOperation.Operator.NEGATE,
+          createConstantExpression(3)
+        )
+      ),
+      rightSide = createConstantExpression(0)
+    )
+
+    MathEquationSubject.assertThat(equation).hasLeftHandSideThat().hasStructureThatMatches {
+      addition {
+        leftOperand {
+          functionCallTo(MathFunctionCall.FunctionType.SQUARE_ROOT) {
+            argument {
+              multiplication {
+                leftOperand {
+                  constant {
+                    withValueThat().isIntegerThat().isEqualTo(4)
+                  }
+                }
+                rightOperand {
+                  variable {
+                    withNameThat().isEqualTo("x")
+                  }
+                }
+              }
+            }
+          }
+        }
+        rightOperand {
+          negation {
+            operand {
+              constant {
+                withValueThat().isIntegerThat().isEqualTo(3)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private fun createFunctionCall(
+    functionType: MathFunctionCall.FunctionType,
+    argument: MathExpression
+  ): MathExpression {
+    return MathExpression.newBuilder()
+      .setFunctionCall(
+        MathFunctionCall.newBuilder()
+          .setFunctionType(functionType)
+          .setArgument(argument)
+      )
+      .build()
+  }
+
+  private fun createUnaryOperation(
+    operator: MathUnaryOperation.Operator,
+    operand: MathExpression
+  ): MathExpression {
+    return MathExpression.newBuilder()
+      .setUnaryOperation(
+        MathUnaryOperation.newBuilder()
+          .setOperator(operator)
+          .setOperand(operand)
+      )
+      .build()
   }
 
   private fun createEquation(

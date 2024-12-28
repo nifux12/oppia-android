@@ -206,18 +206,103 @@ class MathExpressionSubjectTest {
     }
   }
 
+  @Test
+  fun testExpression_withUnsetType_fails() {
+    val expression = MathExpression.getDefaultInstance()
+
+    val exception = assertThrows(AssertionError::class.java) {
+      MathExpressionSubject.assertThat(expression).hasStructureThatMatches {
+        constant {
+          withValueThat().isIntegerThat().isEqualTo(5)
+        }
+      }
+    }
+    assertThat(exception).hasMessageThat().contains("EXPRESSIONTYPE_NOT_SET")
+  }
+
+  @Test
+  fun testBinaryOperation_withUnsetOperator_fails() {
+    val expression = MathExpression.newBuilder()
+      .setBinaryOperation(
+        MathBinaryOperation.newBuilder()
+          .setLeftOperand(createConstantExpression(3))
+          .setRightOperand(createConstantExpression(4))
+      )
+      .build()
+
+    val exception = assertThrows(AssertionError::class.java) {
+      MathExpressionSubject.assertThat(expression).hasStructureThatMatches {
+        addition {
+          leftOperand {
+            constant {
+              withValueThat().isIntegerThat().isEqualTo(3)
+            }
+          }
+          rightOperand {
+            constant {
+              withValueThat().isIntegerThat().isEqualTo(4)
+            }
+          }
+        }
+      }
+    }
+    assertThat(exception).hasMessageThat().contains("Expected binary operation with operator")
+  }
+
+  @Test
+  fun testVariableExpression_withNullName_fails() {
+    val expression = MathExpression.newBuilder()
+      .setVariable("")
+      .build()
+
+    val exception = assertThrows(AssertionError::class.java) {
+      MathExpressionSubject.assertThat(expression).hasStructureThatMatches {
+        variable {
+          withNameThat().isNotEmpty()
+        }
+      }
+    }
+    assertThat(exception).hasMessageThat().contains("expected not to be empty")
+  }
+
+  @Test
+  fun testFunctionCall_withMissingArgument_fails() {
+    val expression = MathExpression.newBuilder()
+      .setFunctionCall(
+        MathFunctionCall.newBuilder()
+          .setFunctionType(MathFunctionCall.FunctionType.SQUARE_ROOT)
+      )
+      .build()
+
+    val exception = assertThrows(AssertionError::class.java) {
+      MathExpressionSubject.assertThat(expression).hasStructureThatMatches {
+        functionCallTo(MathFunctionCall.FunctionType.SQUARE_ROOT) {
+          argument {
+            constant {
+              withValueThat().isIntegerThat().isEqualTo(16)
+            }
+          }
+        }
+      }
+    }
+    assertThat(exception).hasMessageThat().contains("EXPRESSIONTYPE_NOT_SET")
+  }
+
+  /** Creates a constant [MathExpression] with the specified integer value. */
   private fun createConstantExpression(value: Int): MathExpression {
     return MathExpression.newBuilder()
       .setConstant(Real.newBuilder().setInteger(value))
       .build()
   }
 
+  /** Creates a variable [MathExpression] with the specified variable name. */
   private fun createVariableExpression(name: String): MathExpression {
     return MathExpression.newBuilder()
       .setVariable(name)
       .build()
   }
 
+  /** Creates a binary operation [MathExpression] with the specified operator and operands. */
   private fun createBinaryOperation(
     operator: MathBinaryOperation.Operator,
     left: MathExpression,
@@ -233,6 +318,7 @@ class MathExpressionSubjectTest {
       .build()
   }
 
+  /** Creates an implicit multiplication [MathExpression] between two operands. */
   private fun createImplicitMultiplication(
     left: MathExpression,
     right: MathExpression
@@ -248,6 +334,7 @@ class MathExpressionSubjectTest {
       .build()
   }
 
+  /** Creates a unary operation [MathExpression] with the specified operator and operand. */
   private fun createUnaryOperation(
     operator: MathUnaryOperation.Operator,
     operand: MathExpression
@@ -261,6 +348,7 @@ class MathExpressionSubjectTest {
       .build()
   }
 
+  /** Creates a function call [MathExpression] with the specified function type and argument. */
   private fun createFunctionCall(
     functionType: MathFunctionCall.FunctionType,
     argument: MathExpression
@@ -274,6 +362,7 @@ class MathExpressionSubjectTest {
       .build()
   }
 
+  /** Creates a group [MathExpression] that wraps the specified inner expression. */
   private fun createGroupExpression(inner: MathExpression): MathExpression {
     return MathExpression.newBuilder()
       .setGroup(inner)
