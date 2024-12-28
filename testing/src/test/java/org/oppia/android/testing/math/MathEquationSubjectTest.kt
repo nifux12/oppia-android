@@ -34,7 +34,6 @@ class MathEquationSubjectTest {
   fun testHasLeftHandSide_withDefaultExpression_hasNoExpressionType() {
     val equation = MathEquation.getDefaultInstance()
 
-    // Default expression should have no type set
     MathEquationSubject.assertThat(equation).hasLeftHandSideThat().isEqualTo(
       MathExpression.getDefaultInstance()
     )
@@ -58,7 +57,6 @@ class MathEquationSubjectTest {
   fun testHasRightHandSide_withDefaultExpression_hasNoExpressionType() {
     val equation = MathEquation.getDefaultInstance()
 
-    // Default expression should have no type set
     MathEquationSubject.assertThat(equation).hasRightHandSideThat().isEqualTo(
       MathExpression.getDefaultInstance()
     )
@@ -256,8 +254,10 @@ class MathEquationSubjectTest {
         .convertsToLatexStringThat()
         .isEqualTo("5 = 0")
     }
-    assertThat(exception).hasMessageThat().contains("expected: 5 = 0\n" +
-      "but was :  =")
+    assertThat(exception).hasMessageThat().contains(
+      "expected: 5 = 0\n" +
+        "but was :  ="
+    )
   }
 
   @Test
@@ -269,8 +269,10 @@ class MathEquationSubjectTest {
         .convertsWithFractionsToLatexStringThat()
         .isEqualTo("\\frac{1}{2} = 0")
     }
-    assertThat(exception).hasMessageThat().contains("expected: \\frac{1}{2} = 0\n" +
-      "but was :  =")
+    assertThat(exception).hasMessageThat().contains(
+      "expected: \\frac{1}{2} = 0\n" +
+        "but was :  ="
+    )
   }
 
   @Test
