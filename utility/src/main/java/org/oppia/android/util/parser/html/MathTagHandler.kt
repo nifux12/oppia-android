@@ -143,7 +143,8 @@ class MathTagHandler(
   }
 }
 
-private class CenteredLatexImageSpan(drawable: Drawable?) : ImageSpan(drawable ?: createEmptyDrawable()) {
+private class CenteredLatexImageSpan(drawable: Drawable?) :
+  ImageSpan(drawable ?: createEmptyDrawable()) {
   override fun getSize(
     paint: Paint,
     text: CharSequence,
