@@ -2,6 +2,9 @@ package org.oppia.android.util.parser.html
 
 import android.app.Application
 import android.content.res.AssetManager
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.text.Spannable
 import android.text.style.ImageSpan
@@ -60,7 +63,7 @@ class MathTagHandler(
       }
       is MathContent.MathAsLatex -> {
         if (cacheLatexRendering) {
-          ImageSpan(
+          CenteredLatexImageSpan(
             imageRetriever.loadMathDrawable(
               content.rawLatex,
               lineHeight,
@@ -134,6 +137,74 @@ class MathTagHandler(
           this is String -> this
           this != null -> toString()
           else -> null
+        }
+      }
+    }
+  }
+}
+
+private class CenteredLatexImageSpan(drawable: Drawable?) : ImageSpan(drawable ?: createEmptyDrawable()) {
+  override fun getSize(
+    paint: Paint,
+    text: CharSequence,
+    start: Int,
+    end: Int,
+    fontMetricsInt: Paint.FontMetricsInt?
+  ): Int {
+    val d = drawable
+    val bounds = d.bounds
+
+    fontMetricsInt?.let {
+      val paintFm = paint.fontMetricsInt
+      val textHeight = paintFm.descent - paintFm.ascent
+      val latexHeight = bounds.height()
+
+      val centeringOffset = (textHeight - latexHeight) / 2
+
+      it.ascent = paintFm.ascent + centeringOffset
+      it.top = paintFm.top + centeringOffset
+      it.descent = it.ascent + latexHeight
+      it.bottom = it.top + latexHeight
+    }
+
+    return bounds.right
+  }
+
+  override fun draw(
+    canvas: Canvas,
+    text: CharSequence,
+    start: Int,
+    end: Int,
+    x: Float,
+    top: Int,
+    y: Int,
+    bottom: Int,
+    paint: Paint
+  ) {
+    val d = drawable
+    canvas.save()
+
+    val fontMetrics = paint.fontMetricsInt
+    val latexHeight = d.bounds.height()
+
+    val centerY = y + (fontMetrics.descent + fontMetrics.ascent) / 2
+    val drawableY = centerY - (latexHeight / 2)
+
+    canvas.translate(x, drawableY.toFloat())
+    d.draw(canvas)
+    canvas.restore()
+  }
+
+  companion object {
+    private fun createEmptyDrawable(): Drawable {
+      return object : Drawable() {
+        override fun draw(canvas: Canvas) {}
+        override fun setAlpha(alpha: Int) {}
+        override fun setColorFilter(colorFilter: android.graphics.ColorFilter?) {}
+        override fun getOpacity(): Int = android.graphics.PixelFormat.TRANSPARENT
+
+        init {
+          setBounds(0, 0, 1, 1)
         }
       }
     }
