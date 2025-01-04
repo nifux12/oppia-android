@@ -104,8 +104,8 @@ class DragDropSortInteractionView @JvmOverloads constructor(
 
   private fun maybeAttachItemTouchHelper() {
     if (::onDragEnd.isInitialized && ::onItemDrag.isInitialized) {
-      val itemTouchHelper = ItemTouchHelper(DragAndDropItemFacilitator(onItemDrag, onDragEnd))
-      itemTouchHelper.attachToRecyclerView(this)
+      val facilitator = DragAndDropItemFacilitator(onItemDrag, onDragEnd)
+      facilitator.attachToRecyclerView(this)
     }
   }
 
