@@ -23,6 +23,8 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
+import org.mockito.Mockito.eq
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
@@ -43,8 +45,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.abs
 import kotlin.reflect.KClass
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.eq
 
 private const val MATH_MARKUP_1 =
   "<oppia-noninteractive-math math_content-with-value=\"{" +
