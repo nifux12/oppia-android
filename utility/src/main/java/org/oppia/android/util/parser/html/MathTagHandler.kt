@@ -63,7 +63,7 @@ class MathTagHandler(
       }
       is MathContent.MathAsLatex -> {
         if (cacheLatexRendering) {
-          CenteredLatexImageSpan(
+          LatexImageSpan(
             imageRetriever.loadMathDrawable(
               content.rawLatex,
               lineHeight,
@@ -144,7 +144,7 @@ class MathTagHandler(
 }
 
 /** An [ImageSpan] that vertically centers a LaTeX drawable within the surrounding text. */
-private class CenteredLatexImageSpan(drawable: Drawable?) :
+private class LatexImageSpan(drawable: Drawable?) :
   ImageSpan(drawable ?: createEmptyDrawable()) {
   override fun getSize(
     paint: Paint,
