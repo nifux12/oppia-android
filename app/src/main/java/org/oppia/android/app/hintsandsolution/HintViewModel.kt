@@ -20,7 +20,7 @@ class HintViewModel(
    * the original summary.
    */
   val hintContentDescription: String by lazy {
-    CustomHtmlContentHandler.fromHtml(
+    CustomHtmlContentHandler.getContentDescription(
       hintSummary,
       imageRetriever = null,
       customTagHandlers = mapOf()
