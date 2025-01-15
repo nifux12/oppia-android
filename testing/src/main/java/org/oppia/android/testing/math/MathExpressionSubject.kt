@@ -23,7 +23,6 @@ import org.oppia.android.testing.math.RealSubject.Companion.assertThat
 import org.oppia.android.util.math.evaluateAsNumericExpression
 import org.oppia.android.util.math.toRawLatex
 
-
 /**
  * Truth subject for verifying properties of [MathExpression]s.
  *
