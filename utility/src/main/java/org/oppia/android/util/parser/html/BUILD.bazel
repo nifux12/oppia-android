@@ -109,3 +109,19 @@ kt_android_library(
         "//:dagger",
     ],
 )
+
+kt_android_library(
+    name = "test_tag_handler_module",
+    srcs = [
+        "TestTagHandlerModule.kt",
+    ],
+    visibility = [
+        "//:oppia_prod_module_visibility",
+    ],
+    deps = [
+        ":custom_html_content_handler",
+        ":exploration_html_parser_entity_type",
+        ":tag_handlers",
+        "//:dagger",
+    ],
+)

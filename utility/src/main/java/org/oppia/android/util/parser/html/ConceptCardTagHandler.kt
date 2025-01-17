@@ -52,9 +52,10 @@ class ConceptCardTagHandler(
   }
 
   override fun getContentDescription(attributes: Attributes): String? {
+    val skillId = attributes.getJsonStringValue(CUSTOM_CONCEPT_CARD_SKILL_ID)
     val text = attributes.getJsonStringValue(CUSTOM_CONCEPT_CARD_TEXT_VALUE)
-    return if (!text.isNullOrBlank()) {
-      text
+    return if (!skillId.isNullOrBlank() && !text.isNullOrBlank()) {
+      "$text concept card $skillId"
     } else ""
   }
 }

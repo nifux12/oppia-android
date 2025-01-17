@@ -169,6 +169,7 @@ import org.oppia.android.util.networking.NetworkConnectionDebugUtilModule
 import org.oppia.android.util.networking.NetworkConnectionUtil.ProdConnectionStatus
 import org.oppia.android.util.networking.NetworkConnectionUtilDebugModule
 import org.oppia.android.util.parser.html.HtmlParserEntityTypeModule
+import org.oppia.android.util.parser.html.TestTagHandlerModule
 import org.oppia.android.util.parser.image.GlideImageLoaderModule
 import org.oppia.android.util.parser.image.ImageParsingModule
 import org.robolectric.annotation.Config
@@ -2293,7 +2294,7 @@ class ExplorationActivityTest {
           matches(
             withContentDescription(
               "Remember that two halves, when added together, make one whole." +
-                "\nClick on this test_skill_id_1 concept card."
+                "\nClick on this lesson concept card test_skill_id_1."
             )
           )
         )
@@ -2591,7 +2592,7 @@ class ExplorationActivityTest {
 
       onView(withId(R.id.hints_and_solution_summary))
         .inRoot(isDialog())
-        .perform(openClickableSpan("test_skill_id_1 concept card"))
+        .perform(openClickableSpan("lesson"))
 
       testCoroutineDispatchers.runCurrent()
 
@@ -2901,7 +2902,7 @@ class ExplorationActivityTest {
       MetricLogSchedulerModule::class, TestingBuildFlavorModule::class,
       ActivityRouterModule::class,
       CpuPerformanceSnapshotterModule::class, ExplorationProgressModule::class,
-      TestAuthenticationModule::class
+      TestAuthenticationModule::class, TestTagHandlerModule::class
     ]
   )
   interface TestApplicationComponent : ApplicationComponent {
