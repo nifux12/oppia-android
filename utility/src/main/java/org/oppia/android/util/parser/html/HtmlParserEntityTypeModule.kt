@@ -1,10 +1,9 @@
 package org.oppia.android.util.parser.html
 
+import android.view.View
 import dagger.Module
 import dagger.Provides
-import org.oppia.android.util.parser.html.ConceptCardTagHandler
 import javax.inject.Singleton
-import android.view.View
 
 /** Provides Html parsing entity type dependencies. */
 @Module

@@ -14,8 +14,8 @@ import org.oppia.android.domain.hintsandsolution.isHintRevealed
 import org.oppia.android.domain.hintsandsolution.isSolutionAvailable
 import org.oppia.android.domain.hintsandsolution.isSolutionRevealed
 import org.oppia.android.domain.translation.TranslationController
-import org.oppia.android.util.parser.html.ConceptCardTagHandler
 import org.oppia.android.util.logging.ConsoleLogger
+import org.oppia.android.util.parser.html.ConceptCardTagHandler
 import javax.inject.Inject
 
 /**
