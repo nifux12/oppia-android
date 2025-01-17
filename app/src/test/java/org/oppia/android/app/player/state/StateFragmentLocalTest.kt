@@ -2184,7 +2184,7 @@ class StateFragmentLocalTest {
       // Click on the link for opening the concept card.
       onView(withId(R.id.hints_and_solution_summary))
         .inRoot(isDialog())
-        .perform(openClickableSpan("test_skill_id_1 concept card"))
+        .perform(openClickableSpan("lesson"))
       testCoroutineDispatchers.runCurrent()
 
       onView(withText("Concept Card")).inRoot(isDialog()).check(matches(isDisplayed()))
