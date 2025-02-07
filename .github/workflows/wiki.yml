@@ -17,16 +17,13 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
-permissions:
-  contents: write
-
 jobs:
   table_of_contents_check:
     # To verify that the wiki's table of contents matches the headers accurately.
     name: Check Wiki Table of Contents
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Bazel
         uses: abhinavsingh/setup-bazel@v3
