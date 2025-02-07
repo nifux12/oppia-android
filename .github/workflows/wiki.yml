@@ -15,7 +15,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
@@ -52,6 +51,6 @@ jobs:
       - name: Add remote
         run: |
           git filter-branch --subdirectory-filter wiki/ -- --all
-          git remote set-url origin https://github.com/oppia/oppia-android.wiki.git
+          git remote set-url origin https://github.com/nifux12/oppia-android.wiki.git
           git checkout -b master
           git push origin master --force
