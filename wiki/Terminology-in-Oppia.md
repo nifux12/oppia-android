@@ -44,7 +44,7 @@ C4 --> c6("Card-6")
 5. **Exploration/Chapter**: This is a structured learning experience that is part of a story, and provides the learner with an active way to learn new concepts, as well as targeted feedback. It is the core unit of learning in Oppia. The flow/screen that appears when any story is started is known as the Exploration/Chapter.
 6. **Concept Card**: This is a non-story-based explanation of how to perform a particular skill. It serves as a reference/reminder for students who may have encountered the skill before but forgotten how to carry it out. These can be accessed from  the "Study" tab or are linked within the chapter you are playing.
 7. **Question/QuestionPlayer**: This is a standalone question that may be used by students as part of a practice session.
-8. **Study Guide/Revision Card**: A Study Guide summarizes key topics and concepts, helping users quickly review and reinforce what they have learned. Note that the UI displays "Study Guide" instead of "Revision Card", though the codebase still uses the term "revision card" for consistency.
+8. **Study Guide/Revision Card**: A Study test Guide summarizes key topics and concepts, helping users quickly review and reinforce what they have learned. Note that the UI displays "Study Guide" instead of "Revision Card", though the codebase still uses the term "revision card" for consistency.
 ## How to visit?
 
 ### Concept Card
