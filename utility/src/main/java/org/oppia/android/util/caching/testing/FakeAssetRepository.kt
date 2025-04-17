@@ -84,7 +84,10 @@ class FakeAssetRepository @Inject constructor(
     }
 
     val loadedProto = prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
-    trackedAssets[assetName] = loadedProto
+    if (loadedProto != null) {
+      trackedAssets[assetName] = loadedProto
+    }
+
     return loadedProto
   }
 
