@@ -73,6 +73,7 @@
         android:fontFamily="sans-serif-medium"
         android:textColor="@color/component_color_shared_primary_text_color"
         android:textSize="18sp"
+        android:textIsSelectable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/administrator_controls_multipane_options_back_button"
         app:layout_constraintTop_toBottomOf="@id/administrator_controls_activity_toolbar" />
