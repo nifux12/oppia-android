@@ -66,18 +66,26 @@ class FakeAssetRepository @Inject constructor(
   }
 
   private fun loadTextFile(assetName: String): String {
-    return trackedAssets.computeIfAbsent(assetName) {
-      prodImpl.loadTextFileFromLocalAssets(assetName)
-    } as? String ?: error("Asset doesn't exist: $assetName")
+    val existingAsset = trackedAssets[assetName]
+    if (existingAsset != null) {
+      return existingAsset as? String ?: error("Asset doesn't exist: $assetName")
+    }
+
+    val loadedAsset = prodImpl.loadTextFileFromLocalAssets(assetName)
+    trackedAssets[assetName] = loadedAsset
+    return loadedAsset
   }
 
   private fun <T : MessageLite> loadProtoFile(assetName: String, defaultMessage: T): T? {
-    return trackedAssets.computeIfAbsent(assetName) {
-      prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
-    }?.let { protoAsset ->
+    val existingAsset = trackedAssets[assetName]
+    if (existingAsset != null) {
       @Suppress("UNCHECKED_CAST") // This should fail if the cast doesn't fit.
-      protoAsset as? T
+      return existingAsset as? T
     }
+
+    val loadedProto = prodImpl.maybeLoadProtoFromLocalAssets(assetName, defaultMessage)
+    trackedAssets[assetName] = loadedProto
+    return loadedProto
   }
 
   private fun fetchLoadedProtoFile(assetName: String) = trackedAssets[assetName] as? MessageLite
