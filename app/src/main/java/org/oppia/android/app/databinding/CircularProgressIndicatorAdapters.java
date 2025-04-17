@@ -20,7 +20,10 @@ public final class CircularProgressIndicatorAdapters {
    *     on the indicator's customized minimum and maximum progress values)
    */
   @BindingAdapter("animatedProgress")
-  public static void setAnimatedProgress(@NonNull CircularProgressIndicator indicator, int progress) {
+  public static void setAnimatedProgress(
+       @NonNull CircularProgressIndicator indicator,
+       int progress
+  ) {
     if (progress > 0) {
       indicator.setProgressCompat(progress, /* animated = */ true);
     }
