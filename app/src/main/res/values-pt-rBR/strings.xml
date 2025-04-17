@@ -612,7 +612,7 @@
   <string name="lock_icon_content_description">Ícone de cadeado</string>
   <string name="download_status_image_content_description">Estado de download</string>
   <string name="font_scale_html_content_text">Conteúdo HTML</string>
-  <string name="onboarding_language_activity_title">Bem vindo a %s!</string>
+  <string name="onboarding_language_activity_title">Bem-vindo a %s!</string>
   <string name="onboarding_language_activity_subtitle">Aprenda matemática gratuitamente, a qualquer hora!</string>
   <string name="onboarding_language_activity_text">Feito para estudantes de 7 a 14 anos</string>
   <string name="onboarding_language_activity_select_label">Selecione um idioma para começar</string>
