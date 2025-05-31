@@ -901,8 +901,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.android.tools.build:aapt2-proto:7.3.1-8691043"
-  artifact_version: "7.3.1-8691043"
+  artifact_name: "com.android.tools.build:aapt2-proto:8.0.0-9289358"
+  artifact_version: "8.0.0-9289358"
   license {
     license_name: "The Apache Software License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1624,8 +1624,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "com.google.protobuf:protobuf-java:3.17.3"
-  artifact_version: "3.17.3"
+  artifact_name: "com.google.protobuf:protobuf-java:3.19.3"
+  artifact_version: "3.19.3"
   license {
     license_name: "3-Clause BSD License"
     extracted_copy_link {
@@ -1922,8 +1922,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.6.0"
-  artifact_version: "1.6.0"
+  artifact_name: "org.jetbrains.kotlin:kotlin-reflect:1.7.10"
+  artifact_version: "1.7.10"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1933,8 +1933,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.6.21"
-  artifact_version: "1.6.21"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
+  artifact_version: "1.7.10"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1944,8 +1944,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.6.21"
-  artifact_version: "1.6.21"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-common:1.7.10"
+  artifact_version: "1.7.10"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1955,8 +1955,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.21"
-  artifact_version: "1.6.21"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.7.10"
+  artifact_version: "1.7.10"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
@@ -1966,8 +1966,8 @@ maven_dependency {
   }
 }
 maven_dependency {
-  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21"
-  artifact_version: "1.6.21"
+  artifact_name: "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
+  artifact_version: "1.7.10"
   license {
     license_name: "The Apache License, Version 2.0"
     original_link: "https://www.apache.org/licenses/LICENSE-2.0.txt"
