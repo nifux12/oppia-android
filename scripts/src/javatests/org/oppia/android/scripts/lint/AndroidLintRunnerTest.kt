@@ -10,12 +10,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
-/**
- * Tests for [AndroidLintRunner].
- *
- * Note that this test suite focuses on testing the argument preparation and basic functionality
- * without executing the actual Android Lint tool.
- */
+/** Tests for [AndroidLintRunner]. */
 // Same parameter value: helpers reduce test context, even if they are used by 1 test.
 // Function name: test names are conventionally named with underscores.
 @Suppress("SameParameterValue", "FunctionName")
@@ -73,7 +68,7 @@ class AndroidLintRunnerTest {
 
     val output = outputStream.toString()
     assertThat(output).contains("Using")
-    assertThat(output).contains("as an intermediary working directory")
     assertThat(output).contains("lint_analysis_")
+    assertThat(output).contains("as an intermediary working directory")
   }
 }
