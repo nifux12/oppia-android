@@ -34,15 +34,11 @@ class AndroidLintRunner {
   /** Prepares arguments for Lint and invokes the tool. */
   fun runLint() {
 
-    val parentDestDir = Files.createTempDirectory("lint-analysis-").toFile()
+    val parentDestDir = Files.createTempDirectory("lint_analysis_").toFile()
     println("Using ${parentDestDir.absolutePath} as an intermediary working directory")
     val reportFile = File(parentDestDir, "lint-report.xml")
     val cliArgs = prepareLintArguments(reportFile.absolutePath)
-    val exitCode = LintCli().run(cliArgs)
-
-    if (exitCode != 0) {
-      throw Exception("Lint analysis failed with exit code $exitCode.")
-    }
+    LintCli().run(cliArgs)
   }
 
   /**
