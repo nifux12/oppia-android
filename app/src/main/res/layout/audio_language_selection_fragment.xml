@@ -96,6 +96,7 @@
           android:layout_height="wrap_content"
           android:inputType="none"
           android:padding="@dimen/onboarding_shared_padding_small"
+          android:hint="@string/audio_language_dropdown_hint"
           app:filter="@{false}"
           app:languageSelection="@{viewModel.selectedAudioLanguage}" />
       </com.google.android.material.textfield.TextInputLayout>
