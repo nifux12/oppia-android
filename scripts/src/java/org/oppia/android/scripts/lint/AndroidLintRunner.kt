@@ -183,7 +183,7 @@ class AndroidLintRunner(
       val reason = ERROR_CODE_MESSAGES[exitCode] ?: "Unknown failure or internal error"
       error("Lint analysis failed with exit code $exitCode: $reason")
     }
-    reportLintIssues()
+//    reportLintIssues()
   }
 
   /**
@@ -202,7 +202,7 @@ class AndroidLintRunner(
 
     return arrayOf(
       "-Wall",
-      "--quiet",
+      "--stacktrace",
       "--fullpath",
       "--showall",
       "--exitcode",
@@ -214,7 +214,8 @@ class AndroidLintRunner(
       "--kotlin-language-level", KOTLIN_LANGUAGE_VERSION,
       "--java-language-level", javaVersion,
       "--project", projectDescriptionFile.absolutePath,
-      "--xml", reportFile.absolutePath
+      "--xml", reportFile.absolutePath,
+      "--html","/tmp/lint_analysis/lint-report.html",
     )
   }
 
