@@ -215,7 +215,7 @@ class AndroidLintRunner(
       "--java-language-level", javaVersion,
       "--project", projectDescriptionFile.absolutePath,
       "--xml", reportFile.absolutePath,
-      "--html","/tmp/lint_analysis/lint-report.html",
+      "--html", "/tmp/lint_analysis/lint-report.html",
     )
   }
 
