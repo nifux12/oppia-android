@@ -70,4 +70,5 @@ enum LintIssueId {
   USELESS_PARENT = 42;
   VECTOR_PATH = 43;
   VECTOR_RASTER = 44;
+  OLD_TARGet_API = 45;
 }
