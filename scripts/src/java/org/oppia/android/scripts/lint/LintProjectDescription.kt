@@ -304,41 +304,41 @@ class LintProjectDescription(
 
     appendLine("""    <manifest file="${config.manifestFile}"/>""")
 
-    config.srcFiles.forEach { srcFile ->
+    config.srcFiles.sorted().forEach { srcFile ->
       appendLine("""    <src file="$srcFile"/>""")
     }
 
-    config.testFiles.forEach { testFile ->
+    config.testFiles.sorted().forEach { testFile ->
       appendLine("""    <src file="$testFile" test="true"/>""")
     }
 
-    config.resourceDirs.forEach { resourceDir ->
+    config.resourceDirs.sorted().forEach { resourceDir ->
       appendLine("""    <resource dir="$resourceDir"/>""")
     }
 
-    config.dependencies.forEach { dependency ->
+    config.dependencies.sorted().forEach { dependency ->
       appendLine("""    <dep module="$dependency"/>""")
     }
 
-    config.aarFiles.forEach { aarInfo ->
+    config.aarFiles.sortedBy { it.originalPath }.forEach { aarInfo ->
       appendLine(
         """    <aar file="${aarInfo.originalPath}" extracted="${aarInfo.extractedPath}"/>"""
       )
     }
 
-    config.proGuardFiles.forEach { proGuardFile ->
+    config.proGuardFiles.sorted().forEach { proGuardFile ->
       appendLine("""    <proguard file="$proGuardFile"/>""")
     }
 
-    config.jarFiles.forEach { jarFile ->
+    config.jarFiles.sorted().forEach { jarFile ->
       appendLine("""    <classpath jar="$jarFile"/>""")
     }
 
-    config.lintCheckJars.forEach { lintCheckJar ->
+    config.lintCheckJars.sorted().forEach { lintCheckJar ->
       appendLine("""    <lint-checks jar="$lintCheckJar"/>""")
     }
 
-    config.annotationZips.forEach { annotationZip ->
+    config.annotationZips.sorted().forEach { annotationZip ->
       appendLine("""    <annotations file="$annotationZip"/>""")
     }
 

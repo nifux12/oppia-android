@@ -230,31 +230,32 @@ class AndroidLintRunner(
       "--kotlin-language-level", kotlinCompilerVersion,
       "--java-language-level", javaVersion,
       "--project", projectDescriptionFile.absolutePath,
-      "--xml", reportFile.absolutePath
+      "--xml", reportFile.absolutePath,
+      "--html", "/tmp/lint_analysis/lint-report.html"
     )
   }
 
   private fun reportLintIssues() {
     val reporter = LintAnalysisReporter()
     val allIssues = reporter.parseLintReport(reportFile.absolutePath)
-    require(File(exemptionProtoPath).exists()) {
-      "Exemption file does not exist: $exemptionProtoPath"
-    }
-    val exemptions = reporter.loadExemptionsProto(exemptionProtoPath)
-    val filteredIssues = reporter.filterExemptedIssues(
-      issues = allIssues,
-      exemptions = exemptions.androidLintExemptionList,
-      repoRoot = repoRoot
-    )
-    val redundantExemptions = reporter.findRedundantExemptions(
-      issues = allIssues,
-      exemptions = exemptions.androidLintExemptionList,
-      repoRoot = repoRoot
-    )
-    if (redundantExemptions.isNotEmpty()) {
-      reporter.logRedundantExemptions(redundantExemptions)
-    }
-    reporter.printLintReport(filteredIssues, groupByIssueSeverity)
+//    require(File(exemptionProtoPath).exists()) {
+//      "Exemption file does not exist: $exemptionProtoPath"
+//    }
+//    val exemptions = reporter.loadExemptionsProto(exemptionProtoPath)
+//    val filteredIssues = reporter.filterExemptedIssues(
+//      issues = allIssues,
+//      exemptions = exemptions.androidLintExemptionList,
+//      repoRoot = repoRoot
+//    )
+//    val redundantExemptions = reporter.findRedundantExemptions(
+//      issues = allIssues,
+//      exemptions = exemptions.androidLintExemptionList,
+//      repoRoot = repoRoot
+//    )
+//    if (redundantExemptions.isNotEmpty()) {
+//      reporter.logRedundantExemptions(redundantExemptions)
+//    }
+    reporter.printLintReport(allIssues, groupByIssueSeverity)
   }
 
   /**
