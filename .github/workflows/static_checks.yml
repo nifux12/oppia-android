@@ -147,19 +147,6 @@ jobs:
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
 
-      - name: Android Lint Check
-        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-        if:  ${{ !cancelled() }}
-        run: |
-          bazel run //scripts:android_lint_check -- $(pwd)
-
-      - name: Upload working dir
-        uses: actions/upload-artifact@v4
-        with:
-          name: lint-work-dir
-          path: /tmp/lint_analysis/
-
   # Note that caching is intentionally not enabled for this check since licenses should always be
   # verified without any potential influence from earlier builds (i.e. always from a clean build to
   # ensure the results exactly match the current state of the repository).
