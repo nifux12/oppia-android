@@ -93,6 +93,7 @@ jobs:
 
   script_checks:
     name: Script Checks
+    needs: build_oppia_aab
     runs-on: ubuntu-24.04
     env:
       CACHE_DIRECTORY: ~/.bazel_cache

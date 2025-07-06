@@ -218,7 +218,7 @@ class AndroidLintRunner(
     prepareJdkEnvironment(jdkHome)
     return arrayOf(
       "-Wall",
-      "--quiet",
+      "--stacktrace",
       "--fullpath",
       "--showall",
       "--exitcode",

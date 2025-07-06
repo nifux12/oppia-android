@@ -94,3 +94,4 @@ jobs:
           else
             bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}
           fi
+          
