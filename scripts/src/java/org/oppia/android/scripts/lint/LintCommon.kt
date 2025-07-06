@@ -121,6 +121,24 @@ class LintLogger(workingDirectory: File) {
       System.err.println("Failed to write to log: ${e.message}")
     }
   }
+
+  fun sortLogFile() {
+    if (logFile.exists()) {
+      val lines = logFile.readLines()
+
+      // Separate lines to sort and lines to keep as-is
+      val toSort = lines.filter { it.startsWith("Path cannot be resolved:") }.sorted()
+      val toKeep = lines.filter { !it.startsWith("Path cannot be resolved:") }
+
+      // Combine: keep lines not starting with prefix in their original order,
+      // then append the sorted relevant lines at the end
+      val combined = toKeep + toSort
+
+      logFile.writeText(combined.joinToString("\n"))
+    } else {
+      println("Log file does not exist: ${logFile.absolutePath}")
+    }
+  }
 }
 
 /** Java configuration class. */

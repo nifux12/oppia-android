@@ -424,6 +424,26 @@ private class ModuleConfigurationBuilder(
       logger.logError("Failed to extract annotation zips: ${e.message}")
       emptyList()
     }
+    logger.logError(
+      """
+      |Lint project description for module: ${module.moduleName}
+      |  isAndroid: $isLibrary
+      |  srcFiles: ${srcFiles.size}
+      |  testFiles: ${testFiles.size}
+      |  resourceDirs: ${sourceCollector.collectResourceDirectories().size}
+      |  manifestFile: ${findManifestFile(module)}
+      |  dependencies: ${MODULE_DEPENDENCIES[module]?.joinToString(", ") ?: "none"}
+      |  partialResultsDir: ${partialResultDir.absolutePath}
+      |  annotationZips: ${annotationZips.size}
+      |  proGuardFiles: ${sourceCollector.collectProGuardFiles(module.moduleName).size}
+      |  lintCheckJars: ${dependencyResolver.extractLintCheckJars(
+        dependencyResolver.resolveAarFiles(module)
+      ).size}
+      |  aarFiles: ${dependencyResolver.resolveAarFiles(module).size}
+      |  jarFiles: ${dependencyResolver.resolveJarFiles(module).size}
+      
+      """.trimIndent()
+    )
     return ModuleConfig(
       name = module.moduleName,
       isAndroid = true,
@@ -645,7 +665,7 @@ private class PathResolver(
       if (File(resolvedPath).exists()) {
         resolvedPath
       } else {
-        val errorMessage = "Path cannot be resolved: $path -> $resolvedPath"
+        val errorMessage = "Path cannot be resolved: $path"
         logger.logError(errorMessage)
         null
       }

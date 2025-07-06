@@ -110,6 +110,11 @@ class AndroidLintAnalyzer(
   /** Runs the complete lint analysis process. */
   fun runAnalysis() {
     val projectDescriptionFile = generateProjectDescription()
+    LintLogger(workingDirectory).apply {
+      sortLogFile()
+    }
+
+    // Prepare and run the Lint CLI with the necessary arguments
     val lintRunner = AndroidLintRunner(
       reportFile = reportFile,
       projectDescriptionFile = projectDescriptionFile,
