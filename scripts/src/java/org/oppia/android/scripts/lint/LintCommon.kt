@@ -132,17 +132,7 @@ class LintLogger(workingDirectory: File) {
     if (logFile.exists()) {
       val lines = logFile.readLines()
 
-      // Extract and sort lines to move to the top
-      val sortedRelevantLines = lines
-        .filter { it.startsWith("Path cannot be resolved:") }
-        .sorted()
-
-      // Preserve non-matching lines in original order
-      val remainingLines = lines
-        .filter { !it.startsWith("Path cannot be resolved:") }
-
-      // Combine: sorted relevant lines first, then others in original order
-      val finalLines = sortedRelevantLines + remainingLines
+      val finalLines = lines.sorted()
 
       logFile.writeText(finalLines.joinToString("\n"))
     } else {

@@ -60,10 +60,7 @@ class CacheManager {
     val sizeBytes = estimateListSize(value)
     dependencyCache[key] = CachedEntry(value, Instant.now(), sizeBytes)
     updateCacheSize(sizeBytes)
-    println(value.size)
-    LintLogger(File("/tmp/lint_analysis")).logError(
-      "Size of dependencies list: ${value.size}"
-    )
+//    println(value.size)
     return value
   }
 
@@ -427,7 +424,7 @@ private class ModuleConfigurationBuilder(
       logger.logError("Failed to extract annotation zips: ${e.message}")
       emptyList()
     }
-    logger.logError(
+    println(
       """
       |Lint project description for module: ${module.moduleName}
       |  isAndroid: $isLibrary
@@ -668,8 +665,8 @@ private class PathResolver(
       if (File(resolvedPath).exists()) {
         resolvedPath
       } else {
-//        val errorMessage = "Path cannot be resolved: $path"
-//        logger.logError(errorMessage)
+        val errorMessage = "Path cannot be resolved: $path"
+        logger.logError(errorMessage)
         null
       }
     }
