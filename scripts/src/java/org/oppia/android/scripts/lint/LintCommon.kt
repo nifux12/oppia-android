@@ -1,7 +1,6 @@
 package org.oppia.android.scripts.lint
 
 import java.io.File
-import java.time.Instant
 
 /**
  * Enum representing module names in the project.
