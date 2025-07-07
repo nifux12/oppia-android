@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.lint
 
 import com.android.SdkConstants
+import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
@@ -11,7 +12,6 @@ import java.lang.ModuleLayer
 import java.nio.file.Files
 import java.util.concurrent.TimeUnit
 import com.android.tools.lint.Main as LintCli
-import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 
 /** The default timeout duration for executing external processes. */
 private const val DEFAULT_PROCESS_TIMEOUT_MINUTES = 10L
