@@ -91,16 +91,6 @@ jobs:
         run: |
           if [[ "${{ matrix.flavor }}" == "dev" ]]; then
             bazel build -- //:oppia_dev
-            echo "Running Android Lint Check..."
-            bazel run //scripts:android_lint_check -- $(pwd)
           else
             bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}
           fi
-
-      - name: Upload Lint Analysis (only for dev)
-        if: ${{ matrix.flavor == 'dev' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: lint-work-dir
-          path: /tmp/lint_analysis/
-

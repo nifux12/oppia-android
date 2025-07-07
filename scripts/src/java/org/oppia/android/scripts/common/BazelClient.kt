@@ -169,6 +169,11 @@ class BazelClient(private val rootDirectory: File, private val commandExecutor: 
     )
   }
 
+  /** Builds the specified Bazel target and returns the build output lines. */
+  fun buildTarget(bazelTarget: String): List<String> {
+    return executeBazelCommand("build", bazelTarget)
+  }
+
   /**
    * Returns Bazel workspace information.
    *

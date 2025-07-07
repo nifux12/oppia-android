@@ -108,6 +108,7 @@ class AndroidLintAnalyzer(
 
   /** Runs the complete lint analysis process. */
   fun runAnalysis() {
+    bazelClient.buildTarget("//:oppia_dev_binary")
     val logger = LintLogger(workingDirectory)
 //    logger.clearErrorLog()
     generateProjectDescription()
