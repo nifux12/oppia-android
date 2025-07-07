@@ -116,18 +116,12 @@ class LintLogger(workingDirectory: File) {
   /** Logs messages with timestamp. */
   fun logError(message: String) {
     try {
-      logFile.appendText("[${Instant.now()}] $message\n")
+      logFile.appendText("$message\n")
     } catch (e: Exception) {
       System.err.println("Failed to write to log: ${e.message}")
     }
   }
-  fun clearErrorLog() {
-    if (logFile.exists()) {
-      logFile.writeText("")
-    } else {
-      println("Log file does not exist: ${logFile.absolutePath}")
-    }
-  }
+
   fun sortLogFile() {
     if (logFile.exists()) {
       val lines = logFile.readLines()
