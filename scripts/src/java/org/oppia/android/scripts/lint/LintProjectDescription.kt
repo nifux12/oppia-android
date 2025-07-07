@@ -60,7 +60,10 @@ class CacheManager {
     val sizeBytes = estimateListSize(value)
     dependencyCache[key] = CachedEntry(value, Instant.now(), sizeBytes)
     updateCacheSize(sizeBytes)
-
+    println(value.size)
+    LintLogger(File("/tmp/lint_analysis")).logError(
+      "Size of dependencies list: ${value.size}"
+    )
     return value
   }
 
