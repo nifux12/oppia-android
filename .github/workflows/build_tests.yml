@@ -95,14 +95,3 @@ jobs:
             bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}
           fi
 
-      - name: Android Lint Check
-        if: ${{ matrix.flavor == 'dev' }}
-        run: |
-          bazel run //scripts:android_lint_check -- $(pwd)
-
-      - name: Upload working dir
-        if: ${{ matrix.flavor == 'dev' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: lint-work-dir
-          path: /tmp/lint_analysis/

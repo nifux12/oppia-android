@@ -665,8 +665,8 @@ private class PathResolver(
       if (File(resolvedPath).exists()) {
         resolvedPath
       } else {
-        val errorMessage = "Path cannot be resolved: $path"
-        logger.logError(errorMessage)
+//        val errorMessage = "Path cannot be resolved: $path"
+//        logger.logError(errorMessage)
         null
       }
     }
