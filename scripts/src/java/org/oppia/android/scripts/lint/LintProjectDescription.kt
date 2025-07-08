@@ -640,7 +640,7 @@ private class PathResolver(
     private const val BAZEL_OUTPUT_BASE_KEY = "output_base"
     private const val BAZEL_EXECUTION_ROOT_KEY = "execution_root"
   }
-private val bazelInfo = bazelClient.retrieveBazelInfo()
+  private val bazelInfo = bazelClient.retrieveBazelInfo()
   /** Resolves a Bazel path to an absolute file system path. */
   fun resolveBazelPath(path: String): String? =
     cacheManager.getPathResolution(path) {
