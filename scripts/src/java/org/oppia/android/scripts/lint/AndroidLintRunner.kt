@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.lint
 
 import com.android.SdkConstants
+import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
