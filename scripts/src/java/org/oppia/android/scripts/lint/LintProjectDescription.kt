@@ -427,21 +427,8 @@ private class ModuleConfigurationBuilder(
     println(
       """
       |Lint project description for module: ${module.moduleName}
-      |  isAndroid: $isLibrary
-      |  srcFiles: ${srcFiles.size}
-      |  testFiles: ${testFiles.size}
-      |  resourceDirs: ${sourceCollector.collectResourceDirectories().size}
-      |  manifestFile: ${findManifestFile(module)}
-      |  dependencies: ${MODULE_DEPENDENCIES[module]?.joinToString(", ") ?: "none"}
-      |  partialResultsDir: ${partialResultDir.absolutePath}
-      |  annotationZips: ${annotationZips.size}
-      |  proGuardFiles: ${sourceCollector.collectProGuardFiles(module.moduleName).size}
-      |  lintCheckJars: ${dependencyResolver.extractLintCheckJars(
-        dependencyResolver.resolveAarFiles(module)
-      ).size}
       |  aarFiles: ${dependencyResolver.resolveAarFiles(module).size}
       |  jarFiles: ${dependencyResolver.resolveJarFiles(module).size}
-      
       """.trimIndent()
     )
     return ModuleConfig(
@@ -651,14 +638,16 @@ private class PathResolver(
 ) {
   companion object {
     private const val BAZEL_OUTPUT_BASE_KEY = "output_base"
+    private const val BAZEL_EXECUTION_ROOT_KEY = "execution_root"
   }
-
+private val bazelInfo = bazelClient.retrieveBazelInfo()
   /** Resolves a Bazel path to an absolute file system path. */
   fun resolveBazelPath(path: String): String? =
     cacheManager.getPathResolution(path) {
       val resolvedPath = when {
         File(path).isAbsolute -> path
         path.startsWith("external/") -> resolveExternalPath(path)
+        path.startsWith("bazel-out/") -> resolveBazelOutPath(path)
         else -> File(repoRoot, path).absolutePath
       }
 
@@ -671,8 +660,16 @@ private class PathResolver(
       }
     }
 
+  private fun resolveBazelOutPath(path: String): String {
+    val executionRoot = bazelInfo[BAZEL_EXECUTION_ROOT_KEY]
+      ?: throw IllegalStateException(
+        "Could not retrieve Bazel $BAZEL_EXECUTION_ROOT_KEY for path: $path"
+      )
+
+    return File(executionRoot, path).absolutePath
+  }
+
   private fun resolveExternalPath(path: String): String {
-    val bazelInfo = bazelClient.retrieveBazelInfo()
     val outputBase = bazelInfo[BAZEL_OUTPUT_BASE_KEY]
       ?: throw IllegalStateException(
         "Could not retrieve Bazel $BAZEL_OUTPUT_BASE_KEY for path: $path"

@@ -94,16 +94,3 @@ jobs:
           else
             bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}
           fi
-      - name: Lint Oppia AAB
-        run: |
-          if [[ "${{ matrix.flavor }}" == "dev" ]]; then
-            bazel build -- //:oppia_dev_binary &&
-            bazel run //scripts:android_lint_check -- "$(pwd)"
-          else
-          fi
-
-      - name: Upload working dir
-        uses: actions/upload-artifact@v4
-        with:
-          name: lint-work-dir
-          path: /tmp/lint_analysis/
