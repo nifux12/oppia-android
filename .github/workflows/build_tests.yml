@@ -90,7 +90,7 @@ jobs:
       - name: Build Oppia ${{ matrix.flavor }} AAB
         run: |
           if [[ "${{ matrix.flavor }}" == "dev" ]]; then
-            bazel build -- //:oppia_dev
+            bazel build -- //:oppia_${{ matrix.flavor }}
           else
             bazel build --compilation_mode=opt -- //:oppia_${{ matrix.flavor }}
           fi
