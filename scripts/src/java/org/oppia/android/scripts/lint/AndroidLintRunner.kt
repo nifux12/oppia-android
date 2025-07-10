@@ -112,30 +112,30 @@ class AndroidLintAnalyzer(
 //    bazelClient.buildTarget("//:oppia_dev_binary")
     val logger = LintLogger(workingDirectory)
 //    logger.clearErrorLog()
-    val projectDescriptionFile = generateProjectDescription()
+    generateProjectDescription()
     logger.sortLogFile()
 
     // Prepare and run the Lint CLI with the necessary arguments
-    val lintRunner = AndroidLintRunner(
-      reportFile = reportFile,
-      projectDescriptionFile = projectDescriptionFile,
-      repoRoot = repoRoot,
-      exemptionProtoPath = exemptionProtoPath,
-      groupByIssueSeverity = groupByIssueSeverity
-    )
-    val sdkProperties = AndroidBuildSdkProperties()
-    val bazelInfo = bazelClient.retrieveBazelInfo()
-    val javaConfig = JavaConfiguration(bazelInfo)
-    val buildSdkVersion = sdkProperties.buildSdkVersion
-    val kotlinVersion = sdkProperties.kotlinCompilerVersion
-    val cliArgs = lintRunner.prepareLintArguments(
-      jdkHome = javaConfig.getJdkHome(),
-      javaVersion = javaConfig.getVersion(),
-      buildSdkVersion = buildSdkVersion.toString(),
-      kotlinCompilerVersion = extractKotlinMajorVersion(kotlinVersion)
-    )
-
-    lintRunner.runLint(cliArgs)
+//    val lintRunner = AndroidLintRunner(
+//      reportFile = reportFile,
+//      projectDescriptionFile = projectDescriptionFile,
+//      repoRoot = repoRoot,
+//      exemptionProtoPath = exemptionProtoPath,
+//      groupByIssueSeverity = groupByIssueSeverity
+//    )
+//    val sdkProperties = AndroidBuildSdkProperties()
+//    val bazelInfo = bazelClient.retrieveBazelInfo()
+//    val javaConfig = JavaConfiguration(bazelInfo)
+//    val buildSdkVersion = sdkProperties.buildSdkVersion
+//    val kotlinVersion = sdkProperties.kotlinCompilerVersion
+//    val cliArgs = lintRunner.prepareLintArguments(
+//      jdkHome = javaConfig.getJdkHome(),
+//      javaVersion = javaConfig.getVersion(),
+//      buildSdkVersion = buildSdkVersion.toString(),
+//      kotlinCompilerVersion = extractKotlinMajorVersion(kotlinVersion)
+//    )
+//
+//    lintRunner.runLint(cliArgs)
   }
 
   /** Generates the project description XML file. */
