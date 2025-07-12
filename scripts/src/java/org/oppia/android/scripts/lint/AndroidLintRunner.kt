@@ -205,6 +205,7 @@ class AndroidLintRunner(
       val reason = ERROR_CODE_MESSAGES[exitCode] ?: "Unknown failure or internal error"
       error("Lint analysis failed with exit code $exitCode: $reason")
     }
+
     reportLintIssues()
   }
 
@@ -261,7 +262,7 @@ class AndroidLintRunner(
     if (redundantExemptions.isNotEmpty()) {
       reporter.logRedundantExemptions(redundantExemptions)
     }
-    reporter.printLintReport(allIssues, groupByIssueSeverity)
+    reporter.printLintReport(filteredIssues, groupByIssueSeverity)
   }
 
   /**
