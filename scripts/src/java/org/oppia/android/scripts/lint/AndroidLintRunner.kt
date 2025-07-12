@@ -1,6 +1,7 @@
 package org.oppia.android.scripts.lint
 
 import com.android.SdkConstants
+import org.oppia.android.scripts.common.AndroidBuildSdkProperties
 import org.oppia.android.scripts.common.BazelClient
 import org.oppia.android.scripts.common.CommandExecutor
 import org.oppia.android.scripts.common.CommandExecutorImpl
@@ -111,30 +112,30 @@ class AndroidLintAnalyzer(
 //    bazelClient.buildTarget("//:oppia_dev_binary")
     val logger = LintLogger(workingDirectory)
 //    logger.clearErrorLog()
-    generateProjectDescription()
+    val projectDescriptionFile = generateProjectDescription()
     logger.sortLogFile()
 
     // Prepare and run the Lint CLI with the necessary arguments
-//    val lintRunner = AndroidLintRunner(
-//      reportFile = reportFile,
-//      projectDescriptionFile = projectDescriptionFile,
-//      repoRoot = repoRoot,
-//      exemptionProtoPath = exemptionProtoPath,
-//      groupByIssueSeverity = groupByIssueSeverity
-//    )
-//    val sdkProperties = AndroidBuildSdkProperties()
-//    val bazelInfo = bazelClient.retrieveBazelInfo()
-//    val javaConfig = JavaConfiguration(bazelInfo)
-//    val buildSdkVersion = sdkProperties.buildSdkVersion
-//    val kotlinVersion = sdkProperties.kotlinCompilerVersion
-//    val cliArgs = lintRunner.prepareLintArguments(
-//      jdkHome = javaConfig.getJdkHome(),
-//      javaVersion = javaConfig.getVersion(),
-//      buildSdkVersion = buildSdkVersion.toString(),
-//      kotlinCompilerVersion = extractKotlinMajorVersion(kotlinVersion)
-//    )
-//
-//    lintRunner.runLint(cliArgs)
+    val lintRunner = AndroidLintRunner(
+      reportFile = reportFile,
+      projectDescriptionFile = projectDescriptionFile,
+      repoRoot = repoRoot,
+      exemptionProtoPath = exemptionProtoPath,
+      groupByIssueSeverity = groupByIssueSeverity
+    )
+    val sdkProperties = AndroidBuildSdkProperties()
+    val bazelInfo = bazelClient.retrieveBazelInfo()
+    val javaConfig = JavaConfiguration(bazelInfo)
+    val buildSdkVersion = sdkProperties.buildSdkVersion
+    val kotlinVersion = sdkProperties.kotlinCompilerVersion
+    val cliArgs = lintRunner.prepareLintArguments(
+      jdkHome = javaConfig.getJdkHome(),
+      javaVersion = javaConfig.getVersion(),
+      buildSdkVersion = buildSdkVersion.toString(),
+      kotlinCompilerVersion = extractKotlinMajorVersion(kotlinVersion)
+    )
+
+    lintRunner.runLint(cliArgs)
   }
 
   /** Generates the project description XML file. */
@@ -204,7 +205,7 @@ class AndroidLintRunner(
       val reason = ERROR_CODE_MESSAGES[exitCode] ?: "Unknown failure or internal error"
       error("Lint analysis failed with exit code $exitCode: $reason")
     }
-//    reportLintIssues()
+    reportLintIssues()
   }
 
   /**
@@ -243,23 +244,23 @@ class AndroidLintRunner(
   private fun reportLintIssues() {
     val reporter = LintAnalysisReporter()
     val allIssues = reporter.parseLintReport(reportFile.absolutePath)
-//    require(File(exemptionProtoPath).exists()) {
-//      "Exemption file does not exist: $exemptionProtoPath"
-//    }
-//    val exemptions = reporter.loadExemptionsProto(exemptionProtoPath)
-//    val filteredIssues = reporter.filterExemptedIssues(
-//      issues = allIssues,
-//      exemptions = exemptions.androidLintExemptionList,
-//      repoRoot = repoRoot
-//    )
-//    val redundantExemptions = reporter.findRedundantExemptions(
-//      issues = allIssues,
-//      exemptions = exemptions.androidLintExemptionList,
-//      repoRoot = repoRoot
-//    )
-//    if (redundantExemptions.isNotEmpty()) {
-//      reporter.logRedundantExemptions(redundantExemptions)
-//    }
+    require(File(exemptionProtoPath).exists()) {
+      "Exemption file does not exist: $exemptionProtoPath"
+    }
+    val exemptions = reporter.loadExemptionsProto(exemptionProtoPath)
+    val filteredIssues = reporter.filterExemptedIssues(
+      issues = allIssues,
+      exemptions = exemptions.androidLintExemptionList,
+      repoRoot = repoRoot
+    )
+    val redundantExemptions = reporter.findRedundantExemptions(
+      issues = allIssues,
+      exemptions = exemptions.androidLintExemptionList,
+      repoRoot = repoRoot
+    )
+    if (redundantExemptions.isNotEmpty()) {
+      reporter.logRedundantExemptions(redundantExemptions)
+    }
     reporter.printLintReport(allIssues, groupByIssueSeverity)
   }
 
