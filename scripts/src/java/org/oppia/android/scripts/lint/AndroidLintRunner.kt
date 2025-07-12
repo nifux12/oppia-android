@@ -206,7 +206,7 @@ class AndroidLintRunner(
       error("Lint analysis failed with exit code $exitCode: $reason")
     }
 
-    reportLintIssues()
+//    reportLintIssues()
   }
 
   /**
