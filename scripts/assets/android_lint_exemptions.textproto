@@ -2140,7 +2140,6 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/updates_tab_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
-  lint_issue_id: USELESS_LEAF
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/view_event_logs_event_log_item_view.xml"
@@ -2216,6 +2215,7 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values-pcm-rNG/strings.xml"
+  lint_issue_id: DUPLICATE_STRINGS
   lint_issue_id: TYPOGRAPHY_QUOTES
   lint_issue_id: UNUSED_RESOURCES
 }
