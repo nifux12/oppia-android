@@ -231,8 +231,7 @@ class AndroidLintRunner(
       "--kotlin-language-level", kotlinCompilerVersion,
       "--java-language-level", javaVersion,
       "--project", projectDescriptionFile.absolutePath,
-      "--xml", reportFile.absolutePath,
-      "--html", "/tmp/lint_analysis/lint-report.html",
+      "--xml", reportFile.absolutePath
     )
   }
 
