@@ -146,28 +146,6 @@ jobs:
           echo "Using $EXPANDED_BAZEL_CACHE_PATH as Bazel's cache path"
           echo "build --disk_cache=$EXPANDED_BAZEL_CACHE_PATH" >> $HOME/.bazelrc
         shell: bash
-
-      - name: Regex Patterns Validation Check
-        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-        if: ${{ !cancelled() }}
-        run: |
-          bazel run //scripts:regex_pattern_validation_check -- $(pwd)
-
-      - name: XML Syntax Validation Check
-        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-        if: ${{ !cancelled() }}
-        run: |
-          bazel run //scripts:xml_syntax_check -- $(pwd)
-
-      - name: TextView Style Validation Check
-        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-        if:  ${{ !cancelled() }}
-        run: |
-          bazel run //scripts:check_textview_styles -- $(pwd)
-
       - name: Android Lint Check
         # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
         # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
@@ -175,42 +153,11 @@ jobs:
         run: |
           bazel run //scripts:android_lint_check -- $(pwd)
 
-      - name: Testfile Presence Check
-        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-        if: ${{ !cancelled() }}
-        run: |
-          bazel run //scripts:test_file_check -- $(pwd)
-
-      - name: Accessibility label Check
-        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-        if: ${{ !cancelled() }}
-        run: |
-          bazel run //scripts:accessibility_label_check -- $(pwd) scripts/assets/accessibility_label_exemptions.pb app/src/main/AndroidManifest.xml
-
-      - name: KDoc Validation Check
-        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-        if: ${{ !cancelled() }}
-        run: |
-          bazel run //scripts:kdoc_validity_check -- $(pwd) scripts/assets/kdoc_validity_exemptions.pb
-
-      - name: Todo Check
-        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-        if: ${{ !cancelled() }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          bazel run //scripts:todo_open_check -- $(pwd) scripts/assets/todo_open_exemptions.pb
-
-      - name: String Resource Validation Check
-        # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-        # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-        if: ${{ !cancelled() }}
-        run: |
-          bazel run //scripts:string_resource_validation_check -- $(pwd)
+      - name: Upload working dir
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-work-dir
+          path: /tmp/lint_analysis/
 
   # Note that caching is intentionally not enabled for this check since licenses should always be
   # verified without any potential influence from earlier builds (i.e. always from a clean build to

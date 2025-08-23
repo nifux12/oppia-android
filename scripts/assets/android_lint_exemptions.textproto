@@ -2140,7 +2140,6 @@ android_lint_exemption: {
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/updates_tab_fragment.xml"
   lint_issue_id: UNUSED_RESOURCES
-  lint_issue_id: USELESS_LEAF
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/layout/view_event_logs_event_log_item_view.xml"
@@ -2200,7 +2199,6 @@ android_lint_exemption: {
 }
 android_lint_exemption: {
   exempted_file_path: "app/src/main/res/values-land/dimens.xml"
-  lint_issue_id: MISSING_DEFAULT_RESOURCE
   lint_issue_id: UNUSED_RESOURCES
 }
 android_lint_exemption: {
