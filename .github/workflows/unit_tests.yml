@@ -143,13 +143,18 @@ jobs:
           # See https://stackoverflow.com/a/29903172 for cut logic. This is needed to remove the
           # user-friendly shard prefix from the matrix value.
           AFFECTED_TESTS_BUCKET_BASE64=$(echo "$AFFECTED_TESTS_BUCKET_BASE64_ENCODED_SHARD" | cut -d ";" -f 2)
+          SHARD_NAME=$(echo "$AFFECTED_TESTS_BUCKET_BASE64_ENCODED_SHARD" | cut -d ";" -f 1)
           bazel run //scripts:retrieve_affected_tests -- $AFFECTED_TESTS_BUCKET_BASE64 $(pwd)/test_bucket_name $(pwd)/bazel_test_targets
           TEST_CATEGORY=$(cat ./test_bucket_name)
           BAZEL_TEST_TARGETS=$(cat ./bazel_test_targets)
           echo "Test category: $TEST_CATEGORY"
           echo "Bazel test targets: $BAZEL_TEST_TARGETS"
+          echo "Shard name: $SHARD_NAME"
           echo "TEST_CACHING_BUCKET=$TEST_CATEGORY" >> $GITHUB_ENV
-          echo "BAZEL_TEST_TARGETS=$BAZEL_TEST_TARGETS" >> $GITHUB_ENV
+          echo "SHARD_NAME=$SHARD_NAME" >> $GITHUB_ENV
+          # Write targets to file for --target_pattern_file (one target per line)
+          printf '%s\n' $BAZEL_TEST_TARGETS > bazel_targets.txt
+          echo "Target file created with $(wc -l < bazel_targets.txt) lines"
 
       # For reference on this & the later cache actions, see:
       # https://github.com/actions/cache/issues/239#issuecomment-606950711 &
@@ -201,8 +206,6 @@ jobs:
         shell: bash
 
       - name: Build Oppia Tests
-        env:
-          BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
         run: |
           # Attempt to build 5 times in case there are flaky builds.
           # TODO(#3759): Remove this once there are no longer app test build failures.
@@ -212,7 +215,7 @@ jobs:
           while [ $i -ne 5 ]; do
             i=$(( $i+1 ))
             echo "Attempt $i/5 to build test targets"
-            bazel build --keep_going -- $BAZEL_TEST_TARGETS
+            bazel build --keep_going --target_pattern_file=bazel_targets.txt
           done
           # Capture the error code of the final command run (which should be a success if there isn't a real build failure).
           last_error_code=$?
@@ -222,8 +225,6 @@ jobs:
           (exit $last_error_code)
 
       - name: Run Oppia Tests
-        env:
-          BAZEL_TEST_TARGETS: ${{ env.BAZEL_TEST_TARGETS }}
         run: |
           # Attempt to build 5 times in case there are flaky builds.
           # TODO(#3970): Remove this once there are no longer app test build failures.
@@ -233,7 +234,7 @@ jobs:
           while [ $i -ne 5 ]; do
             i=$(( $i+1 ))
             echo "Attempt $i/5 to run test targets"
-            bazel test --keep_going -- $BAZEL_TEST_TARGETS
+            bazel test --keep_going --target_pattern_file=bazel_targets.txt
           done
           # Capture the error code of the final command run (which should be a success if there isn't a real build failure).
           last_error_code=$?
@@ -242,16 +243,23 @@ jobs:
           # Exit only if the most recent exit was a failure (by using a subshell).
           (exit $last_error_code)
 
+      - name: Upload bazel target file
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-tests-bazel-targets-${{ env.SHARD_NAME }}
+          path: bazel_targets.txt
+
   # Reference: https://github.community/t/127354/7.
   check_test_results:
-      name: Check Bazel Test Results
-      needs: [bazel_compute_affected_targets, bazel_run_test]
-      # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
-      # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
-      if: ${{ !cancelled() }}
-      runs-on: ubuntu-24.04
-      steps:
-        # This step will be skipped if there are no tests to run, so the overall job should pass.
-        - name: Check tests passed (for tests that ran)
-          if: ${{ needs.bazel_compute_affected_targets.outputs.can_skip_tests != 'true' && needs.bazel_run_test.result != 'success' }}
-          run: exit 1
+    name: Check Bazel Test Results
+    needs: [bazel_compute_affected_targets, bazel_run_test]
+    # The expression if: ${{ !cancelled() }} runs a job or step regardless of its success or failure while responding to cancellations,
+    # serving as a cancellation-compliant alternative to if: ${{ always() }} in concurrent workflows.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-24.04
+    steps:
+      # This step will be skipped if there are no tests to run, so the overall job should pass.
+      - name: Check tests passed (for tests that ran)
+        if: ${{ needs.bazel_compute_affected_targets.outputs.can_skip_tests != 'true' && needs.bazel_run_test.result != 'success' }}
+        run: exit 1
